@@ -65,8 +65,8 @@ CREATE TABLE CreditCard (
 	expiration_date DATE,
 	FOREIGN KEY(card_address_id) REFERENCES UserAddress(address_id)
 		ON DELETE SET NULL,
-FOREIGN KEY(user_id) REFERENCES Renter(renter_id)
-	ON DELETE CASCADE
+	FOREIGN KEY(user_id) REFERENCES Renter(renter_id)
+		ON DELETE CASCADE
 );
 
 -- Renters Reward table
