@@ -1,0 +1,51 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+nav {
+  background: lightgray;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+nav h1 {
+  flex: auto;
+  margin: 0;
+}
+
+nav h1 a {
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+}
+
+nav ul  {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li a, nav ul li span, header .action {
+  display: block;
+  padding: 0.5rem;
+} 
+
+div {
+  padding: 0 1rem;
+}
+
+div h1 h2 h3 {
+  margin: 0.5rem 0;
+}
+
+.auth {
+    margin: 0 25%;
+}
+
+.flash {
+  margin: 0.5em 0;
+  padding: 1em;
+  background: #cae6f6;
+  border: 1px solid #377ba8;
+}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% block title %}Home{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class='mainSearch'>
+        <center>
+            <h1>Property Search</h1>
+            <form action='/search' method='GET'>
+                <label for='street'>Street:</label>
+                <input type='text' id='street' name='street'>
+                <label for='city'>City:</label>
+                <input type='text' id='city' name='city'>
+                <br><br>
+                <label for='state'>State:</label>
+                <input type='text' id='state' name='state' size='5'>
+                <label for='zip_code'>Zip Code:</label>
+                <input type='text' id='zip_code' name='zip_code' size='10'>
+                <br><br>
+                <button type='submit'>Search Properties</button>
+            </form>
+        </center>
+    </div>
+    <hr>
+    <section class='featured'>
+        <center>
+            <h1>list random selections here</h1>
+            1 2 3 4
+        </center>
+    </section>
+{% endblock %}
