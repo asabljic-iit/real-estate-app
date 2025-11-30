@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <meta charset='UTF-8'>
+    <title>{% block title %}{% endblock %} - Real Estate Website</title>
+    <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
+    <nav>
+        <h1><a href="{{ url_for('home') }}">Real Estate Website</a></h1>
+        <ul>
+            <!-- TODO: add username when user is logged in, change to 'username' -->
+            {% if g.user %}
+                <li><a href="{{ url_for('account') }}">{{ g.user[1] }}</span>
+                <!-- TODO: check if user is agent -->
+                {% if g.user[1] == "dev@test.com" %}
+                    <li><a href="{{ url_for('manage_properties') }}">Manage Properties</span>
+                {% endif %}
+                <li><a href="{{ url_for('manage_booking') }}">Manage Bookings</span>
+                <li><a href="{{ url_for('logout') }}">Log Out</a>
+            {% else %}
+                <li><a href="{{ url_for('register') }}">Register</a>
+                <li><a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </ul>
+    </nav>
+    {% block content %}{% endblock %}
+</html>

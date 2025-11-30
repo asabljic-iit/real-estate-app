@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% block title %}Search Results{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class='results'>
+        <center>
+            <h1>Search Results</h1>
+            
+            <p>Searching for: {{ search_params.street }} {{ search_params.city }} {{ search_params.state }} {{ search_params.zip_code }}</p>
+
+            {% if properties %}
+                <table>
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for property in properties %}
+                            <tr>
+                                {% for column in property %}
+                                    <td>{{ column }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No properties found matching your criteria.</p>
+            {% endif %}
+            
+            <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
+        </center>
+    </div>
+{% endblock %}

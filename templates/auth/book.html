@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% block title %}Book{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class='auth'>
+    <center>
+        <h1>Book This</h1>
+            {% for message in get_flashed_messages() %}
+                <div class='flash'>{{ message }}</div>
+            {% endfor %}
+            <form method='post'>
+                <h2>WIP</h2>
+                <br><br>
+                <input type='submit' value='Book'>
+                <br>
+            </form>
+    </center>
+</div>
+{% endblock %}
