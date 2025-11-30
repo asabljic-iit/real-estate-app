@@ -1,0 +1,55 @@
+-- Sample Data
+
+INSERT INTO Users (email_address, name, password) VALUES 
+('renter1@mail.com', 'Alice Johnson', 'FrostyPine42!'),  -- user_id = 1 (Renter)
+('renter2@mail.com', 'Bob Smith', 'RiverHawk9#'),      -- user_id = 2 (Renter)
+('agent1@agency.com', 'Charlie Brown', 'MapleSunset77$'),  -- user_id = 3 (Agent)
+('agent2@agency.com', 'Diana Prince', 'StormVale3@');   -- user_id = 4 (Agent)
+
+INSERT INTO UserAddress (user_id, street, city, state, zip_code) VALUES
+(1, '123 Main St', 'Anytown', 'CA', '90210'),
+(2, '456 Oak Ave', 'Smallville', 'TX', '77001');
+
+INSERT INTO Renter (renter_id, desired_move_in_date, preferred_location, budget) VALUES
+(1, '2026-03-01', 'Downtown', 2500.00), -- Alice Johnson (user_id 1)
+(2, '2026-05-15', 'Suburbia', 1800.00);  -- Bob Smith (user_id 2)
+
+INSERT INTO Agent (agent_id, agency, job_title, phone_number) VALUES
+(3, 'Top Realty', 'Senior Agent', 5551234223), -- Charlie Brown (user_id 3)
+(4, 'City Homes', 'Broker', 5558231567);        -- Diana Prince (user_id 4)
+
+INSERT INTO CreditCard (credit_card_no, user_id, card_address_id, expiration_date) VALUES
+(8244354853743895, 1, 1, '2028-10-01'); -- Alice Johnson (renter_id 1), address_id 1
+
+INSERT INTO Rewards (renter_id, total_points, activated) VALUES
+(1, 150, TRUE), -- Alice Johnson
+(2, 0, FALSE);  -- Bob Smith
+
+INSERT INTO Neighborhood (nearby_school_count, crime_rate) VALUES
+(5, 1.25), -- Quiet Hills
+(1, 3.50); -- The City Center
+
+INSERT INTO Property (property_id, neighborhood_id, location, num_rooms, description, availability, sq_footage, price, street, city, state, zip_code) VALUES
+(101, 1, 'Northside', 3, 'Modern family home', TRUE, 1800, 350000.00, '789 Pine Ln', 'Anytown', 'CA', '90210'),   -- House
+(102, 2, 'Midtown', 1, 'Studio apartment', TRUE, 500, 1800.00, '101 Blvd', 'Smallville', 'TX', '77001'),        -- Apartment
+(103, 1, 'Northside', 0, 'Open lot for development', TRUE, 10000, 150000.00, '202 Vacant Rd', 'Anytown', 'CA', '90210'), -- Land
+(104, 2, 'Beachfront', 4, 'Luxury vacation rental', FALSE, 2500, 500.00, '303 Ocean Dr', 'Anytown', 'CA', '90210'),  -- VacationHome
+(105, 2, 'City Center', 0, 'Commercial retail space', TRUE, 3000, 750000.00, '404 Market St', 'Smallville', 'TX', '77001'); -- CommercialBuilding
+
+INSERT INTO Booking (renter_id, property_id, start_date, end_date) VALUES
+(1, 104, '2026-01-01', '2026-01-14'); -- Alice Johnson booked the VacationHome (104)
+
+INSERT INTO House (house_id) VALUES
+(101);
+
+INSERT INTO Apartment (apartment_id, building_type) VALUES
+(102, 'High-Rise');
+
+INSERT INTO CommercialBuilding (building_id, business_type) VALUES
+(105, 'Retail');
+
+INSERT INTO VacationHome (house_id) VALUES
+(104);
+
+INSERT INTO Land (land_id, zoning_type) VALUES
+(103, 'Residential');

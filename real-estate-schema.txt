@@ -1,0 +1,152 @@
+-- Pre-Setup/Cleanup
+---- User tables
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Renter;
+DROP TABLE IF EXISTS UserAddress;
+DROP TABLE IF EXISTS Agent;
+DROP TABLE IF EXISTS CreditCard;
+---- Renters Reward table
+DROP TABLE IF EXISTS Rewards;
+---- Properties tables
+DROP TABLE IF EXISTS Neighborhood;
+DROP TABLE IF EXISTS Property;
+---- Booking tables
+DROP TABLE IF EXISTS Booking;
+---- PropertyType tables
+DROP TABLE IF EXISTS House;
+DROP TABLE IF EXISTS Apartment;
+DROP TABLE IF EXISTS CommercialBuilding;
+DROP TABLE IF EXISTS VacationHome;
+DROP TABLE IF EXISTS Land;
+
+-- Setup
+-- Users tables
+
+CREATE TABLE Users (
+	user_id SERIAL PRIMARY KEY,
+	email_address TEXT UNIQUE NOT NULL,
+	name TEXT NOT NULL,
+	password TEXT NOT NULL
+);
+
+CREATE TABLE Renter (
+	renter_id SERIAL PRIMARY KEY,
+	desired_move_in_date DATE,								
+	preferred_location TEXT,
+	budget DECIMAL(10,2),
+	FOREIGN KEY (renter_id) REFERENCES Users(user_id)
+		ON DELETE CASCADE
+);
+
+CREATE TABLE UserAddress (
+    address_id SERIAL PRIMARY KEY,
+    user_id INT,
+    street TEXT,
+    city TEXT,
+    state TEXT,
+    zip_code TEXT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Agent (
+	agent_id SERIAL PRIMARY KEY,
+	agency TEXT,
+	job_title TEXT,
+	phone_number TEXT,
+	FOREIGN KEY (agent_id) REFERENCES Users(user_id)
+		ON DELETE CASCADE
+);
+
+CREATE TABLE CreditCard (
+	credit_card_no TEXT PRIMARY KEY,
+	user_id INT NOT NULL,
+	card_address_id INT,
+	expiration_date DATE,
+	FOREIGN KEY(card_address_id) REFERENCES UserAddress(address_id)
+		ON DELETE SET NULL,
+FOREIGN KEY(user_id) REFERENCES Renter(renter_id)
+	ON DELETE CASCADE
+);
+
+-- Renters Reward table
+
+CREATE TABLE Rewards (
+	renter_id INT PRIMARY KEY,
+	total_points INT DEFAULT 0,
+	activated BOOLEAN,
+	FOREIGN KEY (renter_id) REFERENCES Renter(renter_id)
+		ON DELETE CASCADE
+);
+
+-- Properties tables
+CREATE TABLE Neighborhood (
+	neighborhood_id SERIAL PRIMARY KEY,
+	nearby_school_count INT,
+	crime_rate DECIMAL(3, 2)
+);
+
+CREATE TABLE Property (
+	property_id SERIAL PRIMARY KEY,
+	neighborhood_id INT,
+	location TEXT,
+	num_rooms INT,
+	description TEXT,
+	availability BOOLEAN DEFAULT TRUE,
+	sq_footage INT,
+	price DECIMAL(10,2),
+	street TEXT,
+	city TEXT,
+	state TEXT,
+	zip_code TEXT,
+	FOREIGN KEY (neighborhood_id) REFERENCES Neighborhood(neighborhood_id)
+		ON DELETE SET NULL
+);
+
+-- Booking Table
+CREATE TABLE Booking (
+	booking_id SERIAL PRIMARY KEY,
+	renter_id INT NOT NULL,
+	property_id INT NOT NULL,
+	start_date DATE,
+	end_date DATE,
+	FOREIGN KEY (renter_id) REFERENCES Renter(renter_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY (property_id) REFERENCES Property(property_id)
+		ON DELETE CASCADE
+);
+
+-- PropertyType tables
+
+CREATE TABLE House (
+	house_id INT PRIMARY KEY,
+	FOREIGN KEY (house_id) REFERENCES Property(property_id) 
+		ON DELETE CASCADE
+);
+
+CREATE TABLE Apartment (
+	apartment_id INT PRIMARY KEY, 
+	building_type TEXT,
+	FOREIGN KEY (apartment_id) REFERENCES Property(property_id) 
+		ON DELETE CASCADE
+);
+
+CREATE TABLE CommercialBuilding (
+	building_id INT PRIMARY KEY,		 
+	business_type TEXT,
+	FOREIGN KEY (building_id) REFERENCES Property(property_id) 
+		ON DELETE CASCADE
+);
+
+CREATE TABLE VacationHome (
+	house_id INT PRIMARY KEY,
+	FOREIGN KEY (house_id) REFERENCES Property(property_id) 
+		ON DELETE CASCADE
+);
+
+CREATE TABLE Land (
+	land_id INT PRIMARY KEY,
+	zoning_type TEXT,
+	FOREIGN KEY (land_id) REFERENCES Property(property_id) 
+		ON DELETE CASCADE
+);
