@@ -7,7 +7,57 @@ DB_NAME = 'real-estate'
 DB_USER = 'postgres'
 DB_PASSWORD = '1234'
 
-#TODO? add easier way to query db with a function
+def execute_query(query, params=None, fetch_mode='all'):
+    """
+    Connects to the DB, executes a query, and returns results based on fetch_mode.
+    
+    Args:
+        query (str): The SQL query string.
+        params (tuple/list): Parameters to safely substitute into the query.
+        fetch_mode (str): 'all' for fetchall(), 'one' for fetchone(), or 'commit' for non-SELECT queries.
+        
+    Returns:
+        tuple or dict: Query results (or None for 'commit').
+    """
+    conn = None
+    cur = None
+    results = None
+    
+    try:
+        # Establish Connection
+        conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+        cur = conn.cursor()
+
+        # Execute Query
+        cur.execute(query, params)
+        
+        # Handle Fetching or Commit
+        if fetch_mode == 'all':
+            results = cur.fetchall()
+            headers = [desc[0] for desc in cur.description]
+            return headers, results
+        elif fetch_mode == 'one':
+            # Returns a single row
+            row = cur.fetchone()
+            if row:
+                headers = [desc[0] for desc in cur.description]
+                return dict(zip(headers, row)) # Returns a dictionary for easy template access
+            return None
+        elif fetch_mode == 'commit':
+            conn.commit()
+            return True # Indicate success for INSERT/UPDATE/DELETE
+        
+    except psycopg2.OperationalError as e:
+        print(f"DB Operational Error: {e}")
+    except Exception as e:
+        print(f"General DB Error: {e}")
+        
+    finally:
+        # Clean Up
+        if cur: cur.close()
+        if conn: conn.close()
+        
+    return None # Return None on any failure
 
 
 # Login Page Functions
@@ -79,56 +129,45 @@ def delete_property_db():
 
 
 # Search Page Functions
-def search_properties_db(street, city, state, zip_code):
-    conn = None
-    cur = None
-    results = []
-    headers = []
+def search_properties(street, city, state, zip_code):
     
-    try:
-        conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
-        cur = conn.cursor()
-        
-        # --- Build the Dynamic SQL Query ---
-        query = "SELECT street, city, state, zip_code FROM property WHERE 1=1"
-        params = []
-        
-        # Check for and append filters for non-empty search fields
-        if street:
-            query += " AND street ILIKE %s" # ILIKE for case-insensitive search
-            params.append(f"%{street}%")
-        if city:
-            query += " AND city ILIKE %s"
-            params.append(f"%{city}%")
-        if state:
-            query += " AND state ILIKE %s"
-            params.append(f"%{state}%")
-        if zip_code:
-            query += " AND zip_code = %s" # = for exact zip match
-            params.append(zip_code)
-        
-        cur.execute(query, tuple(params))
-        
-        headers = [desc[0] for desc in cur.description]
-        results = cur.fetchall()
-        
-        return headers, results
-
-    except Exception as e:
-        print(f"Error searching properties: {e}")
-        return [], []
-        
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
+    # --- Build the Dynamic SQL Query ---
+    query = "SELECT property_id, street, city, state, zip_code FROM property WHERE 1=1"
+    params = []
+    
+    if street:
+        query += " AND street ILIKE %s"
+        params.append(f"%{street}%")
+    if city:
+        query += " AND city ILIKE %s"
+        params.append(f"%{city}%")
+    if state:
+        query += " AND state ILIKE %s"
+        params.append(f"%{state}%")
+    if zip_code:
+        query += " AND zip_code = %s"
+        params.append(zip_code)
+    
+    return execute_query(query, tuple(params), fetch_mode='all')
 
 
 # Booking Page Functions
+def get_property_details(property_id):
+
+    query = "SELECT * FROM property WHERE property_id = %s"
+    
+    # Use the core function to execute and fetch one result
+    return execute_query(query, (property_id,), fetch_mode='one')
+
 def get_payment_method():
     pass
 
-def save_booking():
-    pass
+def save_booking(property_id, user_id):
+    query = "INSERT INTO booking (property_id, renter_id, booking_date) VALUES (%s, %s, NOW())"
+    params = (property_id, user_id)
+    
+    # Use the core function to execute and commit
+    return execute_query(query, params, fetch_mode='commit')
 
 
 # Manage Booking Page Functions
@@ -137,89 +176,3 @@ def get_bookings():
 
 def cancel_booking():
     pass
-
-
-
-
-
-# TEST FUNCTIONS
-def get_all_users():
-    """Connects to the real-estate database and returns all rows from the users table."""
-    conn = None
-    cur = None
-    users_data = []
-    column_names = []
-    
-    try:
-        # Establish Connection
-        conn = psycopg2.connect(
-            host=DB_HOST, 
-            database=DB_NAME,
-            user=DB_USER, 
-            password=DB_PASSWORD
-        )
-        cur = conn.cursor()
-
-        # Execute Query
-        cur.execute("SELECT * FROM users ORDER BY user_id ASC")
-        
-        # Get column names for the table header
-        column_names = [desc[0] for desc in cur.description]
-
-        # Fetch all rows
-        users_data = cur.fetchall()
-        
-        return column_names, users_data
-
-    except psycopg2.OperationalError as e:
-        print(f"Connection Error in get_all_users: {e}")
-        return [], [] # Return empty lists on failure
-    
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return [], []
-        
-    finally:
-        # Clean Up
-        if cur is not None:
-            cur.close()
-        if conn is not None:
-            conn.close()
-
-# Example usage (will not run in the final web app)
-# headers, data = get_all_users()
-# print(headers)
-# print(data)
-# print('done')
-
-def get_all_properties():
-    """Connects to the real-estate database and returns all rows from the properties table."""
-    conn = None
-    cur = None
-    properties_data = []
-    column_names = []
-    
-    try:
-        # Establish connection (using existing DB_HOST, DB_NAME, etc.)
-        conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
-        cur = conn.cursor()
-
-        # Execute Query for the new table
-        cur.execute("SELECT * FROM property ORDER BY property_id ASC")
-        
-        column_names = [desc[0] for desc in cur.description]
-        properties_data = cur.fetchall()
-        
-        return column_names, properties_data
-
-    except Exception as e:
-        print(f"Error getting properties: {e}")
-        return [], []
-        
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
-
-# headers, data = get_all_properties()
-# print(headers)
-# print(data)

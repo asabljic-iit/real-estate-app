@@ -1,22 +1,27 @@
 {% extends 'base.html' %}
 
 {% block header %}
-{% block title %}Book{% endblock %}
+    {% block title %}Book {{ property.street }}{% endblock %}
 {% endblock %}
 
 {% block content %}
-<div class='auth'>
-    <center>
-        <h1>Book This</h1>
+    <div class='book'>
+        <center>
+            <h1>Booking Details for: {{ property.street }}, {{ property.city }}</h1>
+            <h2>Property Information</h2>
+            Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
+            <br><br>
+            add more details
+            <h2>Book Now</h2>
             {% for message in get_flashed_messages() %}
                 <div class='flash'>{{ message }}</div>
             {% endfor %}
-            <form method='post'>
-                <h2>WIP</h2>
+            <form method="post">
+                select payment details
                 <br><br>
-                <input type='submit' value='Book'>
-                <br>
+                <button type="submit">Confirm Booking</button>
             </form>
-    </center>
-</div>
+            <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
+        </center>
+    </div>
 {% endblock %}

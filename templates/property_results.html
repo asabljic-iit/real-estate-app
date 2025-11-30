@@ -23,9 +23,14 @@
                     <tbody>
                         {% for property in properties %}
                             <tr>
-                                {% for column in property %}
+                                {% for column in property[1:] %}
                                     <td>{{ column }}</td>
                                 {% endfor %}
+                                <td>
+                                    <a href="{{ url_for('book_property', property_id=property[0]) }}">
+                                        <button type="button">Book</button>
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

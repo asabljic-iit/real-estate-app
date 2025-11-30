@@ -1,28 +1,31 @@
 {% extends 'base.html' %}
 
 {% block header %}
-{% block title %}Register{% endblock %}
+    {% block title %}Register{% endblock %}
 {% endblock %}
 
 {% block content %}
-<div class='auth'>
-    <center>
-        <h1>Register</h1>
-        {% for message in get_flashed_messages() %}
-            <div class='flash'>{{ message }}</div>
-        {% endfor %}
-        <form method='post'>
-            <label for='email'>Email:</label>
-            <input type='email' name='email' id='email' required>
-            <br><br>
-            <label for='password'>Password:</label>
-            <input type='password' name='password' id='password' required>
-            <br><br>
-            <input type='submit' value='Register'>
+    <div class='auth'>
+        <center>
+            <h1>Register</h1>
+            {% for message in get_flashed_messages() %}
+                <div class='flash'>{{ message }}</div>
+            {% endfor %}
+            <form method='post'>
+                <label for='email'>Email:</label>
+                <input type='email' name='email' id='email' required>
+                <br><br>
+                <label for='name'>Name:</label>
+                <input name='name' id='name' required>
+                <br><br>
+                <label for='password'>Password:</label>
+                <input type='password' name='password' id='password' required>
+                <br><br>
+                <input type='submit' value='Register'>
+                <br>
+            </form>
             <br>
-        </form>
-        <br>
-        <a href="{{ url_for('login') }}"><button>Login Instead</button></a>
-    </center>
-</div>
+            <a href="{{ url_for('login') }}"><button>Login Instead</button></a>
+        </center>
+    </div>
 {% endblock %}

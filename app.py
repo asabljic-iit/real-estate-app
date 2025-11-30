@@ -110,7 +110,7 @@ def manage_properties():
 # TODO- Results display price, bedrooms, property type, and description.
 # TODO- Users can sort results by price or number of bedrooms.
 @app.route('/search', methods=['GET'])
-def search_properties():
+def search():
     # Get the search criteria from the URL query parameters
     street = request.args.get('street', '')
     city = request.args.get('city', '')
@@ -118,23 +118,31 @@ def search_properties():
     zip_code = request.args.get('zip_code', '')
     
     # Call a new database function to filter the properties
-    headers, results = search_properties_db(street, city, state, zip_code)
+    headers, results = search_properties(street, city, state, zip_code)
+
+    display_headers = headers[1:]
     
     return render_template('property_results.html', 
-                           headers=headers, 
+                           headers=display_headers, 
                            properties=results, 
                            search_params=request.args)
 
 # Renter- Booking Page
 # TODO- Renters select a property, rental period, and payment method.
 # TODO- Booking details show rental period, total cost, and payment method.
-@app.route('/booking', methods=['GET', 'POST'])
+@app.route('/book/<property_id>', methods=['GET', 'POST'])
 @login_required
-def booking():
+def book_property(property_id):
+    property_details = get_property_details(property_id)
     if request.method == 'POST':
-        flash('whoopsie')
-
-    return render_template('auth/book.html')
+        # flash('whoopsie')
+        # success = save_booking(property_id, user_name, ...)
+        return render_template('confirmation.html', property=property_details)
+    else:
+        if property_details:
+            return render_template('auth/book.html', property=property_details)
+        else:
+            abort(404)
 
 # Manage Bookings Page
 # TODO- Renters can view and cancel their bookings. Refunds go to the saved payment method, if applicable.
@@ -146,20 +154,6 @@ def manage_booking():
         flash('whoopsie')
 
     return render_template('auth/manage-book.html')
-
-
-
-# testing page, list all users
-@app.route('/test_users')
-def user_list():
-    headers, users = get_all_users()
-    return render_template('test_users.html', headers=headers, users=users)
-
-# testing page, list all properties
-@app.route('/test_properties')
-def property_list():
-    headers, properties = get_all_properties()
-    return render_template('test_properties.html', headers=headers, properties=properties)
 
 if __name__ == '__main__':
     app.run(debug=True) # debug=True allows editing w/o having to restart server
