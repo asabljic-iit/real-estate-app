@@ -39,6 +39,7 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+
 # The application supports the following actions (role in parentheses):
 # - Account registration (agents and prospective renters)
 # - Add/modify/delete payment and address information (prospective renters)
