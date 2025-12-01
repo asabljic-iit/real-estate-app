@@ -1,7 +1,42 @@
+/* base Styles */
 body {
   font-family: Arial, sans-serif;
 }
 
+input, button {
+  padding: 0.5em;
+}
+
+div {
+  padding: 0 1rem;
+  text-align: center;
+}
+
+section {
+  text-align: center;
+}
+
+div h1 h2 h3 {
+  margin: 0.5rem 0;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav h1 a {
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+}
+
+div table {
+  margin: 0 auto;
+}
+
+/* Layout/Structure */
 nav {
   background: lightgray;
   display: flex;
@@ -14,35 +49,35 @@ nav h1 {
   margin: 0;
 }
 
-nav h1 a {
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-}
-
-nav ul  {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-nav ul li a, nav ul li span, header .action {
+/* Modules/Components */
+nav ul li a,
+nav ul li span,
+header .action {
   display: block;
   padding: 0.5rem;
-} 
-
-div {
-  padding: 0 1rem;
 }
 
-div h1 h2 h3 {
-  margin: 0.5rem 0;
+input, button {
+  padding: 0.5em;
 }
 
 .auth {
-    margin: 0 25%;
+  margin: 0 25%;
 }
 
+.auth form {
+  display: inline-block;
+  margin: 0 25%;
+  text-align: right;
+}
+
+input[type='submit'] {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+}
+
+/* Themes/States */
 .flash {
   margin: 0.5em 0;
   padding: 1em;

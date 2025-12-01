@@ -6,22 +6,21 @@
 
 {% block content %}
     <div class='book'>
-        <center>
-            <h1>Booking Details for: {{ property.street }}, {{ property.city }}</h1>
-            <h2>Property Information</h2>
-            Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
+        <h1>Booking Details for: {{ property.street }}, {{ property.city }}</h1>
+        <h2>Property Information</h2>
+        Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
+        <br><br>
+        add more details
+        <h2>Book Now</h2>
+        {% for message in get_flashed_messages() %}
+            <div class='flash'>{{ message }}</div>
+        {% endfor %}
+        <form method="post">
+            select payment details
             <br><br>
-            add more details
-            <h2>Book Now</h2>
-            {% for message in get_flashed_messages() %}
-                <div class='flash'>{{ message }}</div>
-            {% endfor %}
-            <form method="post">
-                select payment details
-                <br><br>
-                <button type="submit">Confirm Booking</button>
-            </form>
-            <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
-        </center>
+            <button type="submit">Confirm Booking</button>
+        </form>
+        <br><br>
+        <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
     </div>
 {% endblock %}

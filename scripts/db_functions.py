@@ -14,7 +14,9 @@ def execute_query(query, params=None, fetch_mode='all'):
     Args:
         query (str): The SQL query string.
         params (tuple/list): Parameters to safely substitute into the query.
-        fetch_mode (str): 'all' for fetchall(), 'one' for fetchone(), or 'commit' for non-SELECT queries.
+        fetch_mode (str): 'all' for fetchall(), 
+                          'one' for fetchone(), or 
+                          'commit' for non-SELECT queries.
         
     Returns:
         tuple or dict: Query results (or None for 'commit').
@@ -25,7 +27,8 @@ def execute_query(query, params=None, fetch_mode='all'):
     
     try:
         # Establish Connection
-        conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+        conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, 
+                                user=DB_USER, password=DB_PASSWORD)
         cur = conn.cursor()
 
         # Execute Query
@@ -41,11 +44,13 @@ def execute_query(query, params=None, fetch_mode='all'):
             row = cur.fetchone()
             if row:
                 headers = [desc[0] for desc in cur.description]
-                return dict(zip(headers, row)) # Returns a dictionary for easy template access
+                # Returns a dictionary for easy template access
+                return dict(zip(headers, row)) 
             return None
         elif fetch_mode == 'commit':
             conn.commit()
-            return True # Indicate success for INSERT/UPDATE/DELETE
+            # Indicate success for INSERT/UPDATE/DELETE
+            return True 
         
     except psycopg2.OperationalError as e:
         print(f"DB Operational Error: {e}")
@@ -57,12 +62,14 @@ def execute_query(query, params=None, fetch_mode='all'):
         if cur: cur.close()
         if conn: conn.close()
         
-    return None # Return None on any failure
+    # Return None on any failure
+    return None
 
 
 # Login Page Functions
 def login_db(email, pswd):
-    if email == "dev@test.com": # remove when finished implementing login
+    # Remove when finished implementing login
+    if email == "dev@test.com":
         session.clear()
         session['user_id'] = 9999
 
@@ -103,28 +110,30 @@ def register_db(email, pswd):
 
    
 # Account Page Functions
-# TODO- Renters can add, modify, or delete addresses and credit cards. Billing addresses cannot be deleted before deleting the associated credit card.
+# TODO- Renters can add, modify, or delete addresses and credit cards.
+#  Billing addresses cannot be deleted before deleting the associated credit card.
 # TODO Renter- save info, display saved info (if any), and add rewards program
-# TODO Agent- check for agent or renter, then show applicable options (for agents, its job title, agency, contact info (phone num))
-def get_account_db():
+# TODO Agent- check for agent or renter, then show applicable options
+#  (for agents, its job title, agency, contact info (phone num))
+def get_account():
     pass
 
-def save_account_db():
+def save_account():
     pass
 
 
 # Manage Property Page Functions
 # TODO- add, manage, delete properties
-def get_properties_db():
+def get_properties():
     pass
 
-def add_property_db():
+def add_property():
     pass
 
-def edit_property_db():
+def edit_property():
     pass
 
-def delete_property_db():
+def delete_property():
     pass
 
 

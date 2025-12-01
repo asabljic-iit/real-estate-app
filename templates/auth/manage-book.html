@@ -6,17 +6,15 @@
 
 {% block content %}
     <div class='manage-book'>
-        <center>
-            <h1>Manage Bookings</h1>
-            {% for message in get_flashed_messages() %}
-                <div class='flash'>{{ message }}</div>
-            {% endfor %}
-            <form method='post'>
-                <h2>WIP</h2>
-                <br><br>
-                <input type='submit' value='Save'>
-                <br>
-            </form>
-        </center>
+        <h1>Manage Bookings</h1>
+        {% for message in get_flashed_messages() %}
+            <div class='flash'>{{ message }}</div>
+        {% endfor %}
+        <form method='post'>
+            <h2>WIP</h2>
+            <br><br>
+            <input type='submit' value='Save'>
+        </form>
+        <br><br>
     </div>
 {% endblock %}

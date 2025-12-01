@@ -6,13 +6,12 @@
 
 {% block content %}
     <div>
-        <center>
-            <h1>congats</h1>
-            <h2>Property Information</h2>
-            Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
-            <br><br>
-            you did it
-            <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
-        </center>
+        <h1>congats</h1>
+        <h2>Property Information</h2>
+        Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
+        <br><br>
+        you did it
+        <br><br>
+        <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
     </div>
 {% endblock %}
