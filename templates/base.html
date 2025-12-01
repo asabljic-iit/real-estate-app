@@ -8,9 +8,9 @@
         <ul>
             <!-- TODO: add username when user is logged in, change to 'username' -->
             {% if g.user %}
-                <li><a href="{{ url_for('account') }}">{{ g.user[1] }}</span>
+                <li><a href="{{ url_for('account') }}">{{ g.user['name'] }}</span>
                 <!-- TODO: check if user is agent -->
-                {% if g.user[1] == "dev@test.com" %}
+                {% if get_agency(g.user['user_id']) %}
                     <li><a href="{{ url_for('manage_properties') }}">Manage Properties</span>
                 {% endif %}
                 <li><a href="{{ url_for('manage_booking') }}">Manage Bookings</span>

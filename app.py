@@ -1,4 +1,5 @@
 import functools
+import psycopg2
 from flask import Flask, render_template, request, flash, abort, g, session
 from flask import redirect, url_for
 from scripts.db_functions import *
@@ -25,15 +26,11 @@ def load_logged_in_user():
     the database into ``g.user``."""
     user_id = session.get('user_id')
 
+    #TODO- write g.agent and agent_id
     if user_id is None:
         g.user = None
-    if user_id == 9999:
-        g.user = [user_id, "dev@test.com"]
     else:
-        try:
-            g.user = get_user(user_id)
-        except Exception:
-            return redirect(url_for('logout'))
+        g.user = (get_user(user_id))
 
 @app.route('/logout')
 def logout():
@@ -54,6 +51,26 @@ def logout():
 def home():
     return render_template('home.html')
 
+# User Register Page
+# Both agents and prospective renters can register with an email and personal information.
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        agency = request.form['agency']
+        email = request.form['email']
+        name = request.form['name']
+        pswd = request.form['password']
+
+        try:
+            register_user(agency, email, name, pswd)
+            return redirect(url_for('login'))
+        except psycopg2.IntegrityError:
+            flash("Registration failed: That email address is already registered.")
+        except Exception as error:
+            flash(f"An unexpected error occurred: {error}")
+
+    return render_template('auth/register.html')
+
 # User Login Page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,28 +79,14 @@ def login():
         pswd = request.form['password']
 
         try:
-            login_db(email, pswd)
+            login_user(email, pswd)
             return redirect(url_for('account'))
-        except Exception as error:
+        except ValueError as error:
             flash(error)
+        except Exception as error:
+            flash(f"An unexpected error occurred: {error}")
 
     return render_template('auth/login.html')
-
-# User Register Page
-# Both agents and prospective renters can register with an email and personal information.
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        pswd = request.form['password']
-
-        try:
-            register_db(email, pswd)
-            return redirect(url_for('login'))
-        except Exception as error:
-            flash(error)
-
-    return render_template('auth/register.html')
 
 # Renter- Account Page
 # TODO- Renters can add, modify, or delete addresses and credit cards. 
@@ -132,6 +135,9 @@ def search():
                            headers=display_headers, 
                            properties=results, 
                            search_params=request.args)
+
+# TODO- add a property details page and book from there instead of currently booking
+#  directly from  the search results?
 
 # Renter- Booking Page
 # TODO- Renters select a property, rental period, and payment method.

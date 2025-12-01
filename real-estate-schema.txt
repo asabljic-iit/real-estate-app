@@ -1,23 +1,23 @@
 -- Pre-Setup/Cleanup
 ---- User tables
-DROP TABLE IF EXISTS Users;
-DROP TABLE IF EXISTS Renter;
-DROP TABLE IF EXISTS UserAddress;
-DROP TABLE IF EXISTS Agent;
-DROP TABLE IF EXISTS CreditCard;
+DROP TABLE IF EXISTS Users CASCADE;
+DROP TABLE IF EXISTS Renter CASCADE;
+DROP TABLE IF EXISTS UserAddress CASCADE;
+DROP TABLE IF EXISTS Agent CASCADE;
+DROP TABLE IF EXISTS CreditCard CASCADE;
 ---- Renters Reward table
-DROP TABLE IF EXISTS Rewards;
+DROP TABLE IF EXISTS Rewards CASCADE;
 ---- Properties tables
-DROP TABLE IF EXISTS Neighborhood;
-DROP TABLE IF EXISTS Property;
+DROP TABLE IF EXISTS Neighborhood CASCADE;
+DROP TABLE IF EXISTS Property CASCADE;
 ---- Booking tables
-DROP TABLE IF EXISTS Booking;
+DROP TABLE IF EXISTS Booking CASCADE;
 ---- PropertyType tables
-DROP TABLE IF EXISTS House;
-DROP TABLE IF EXISTS Apartment;
-DROP TABLE IF EXISTS CommercialBuilding;
-DROP TABLE IF EXISTS VacationHome;
-DROP TABLE IF EXISTS Land;
+DROP TABLE IF EXISTS House CASCADE;
+DROP TABLE IF EXISTS Apartment CASCADE;
+DROP TABLE IF EXISTS CommercialBuilding CASCADE;
+DROP TABLE IF EXISTS VacationHome CASCADE;
+DROP TABLE IF EXISTS Land CASCADE;
 
 -- Setup
 -- Users tables
@@ -51,7 +51,7 @@ CREATE TABLE UserAddress (
 
 CREATE TABLE Agent (
 	agent_id SERIAL PRIMARY KEY,
-	agency TEXT,
+	agency TEXT NOT NULL,
 	job_title TEXT,
 	phone_number TEXT,
 	FOREIGN KEY (agent_id) REFERENCES Users(user_id)
@@ -88,6 +88,7 @@ CREATE TABLE Neighborhood (
 
 CREATE TABLE Property (
 	property_id SERIAL PRIMARY KEY,
+	agency TEXT NOT NULL,
 	neighborhood_id INT,
 	location TEXT,
 	num_rooms INT,
