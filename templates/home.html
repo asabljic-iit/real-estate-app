@@ -37,7 +37,7 @@
                 <tbody>
                     {% for property in properties %}
                         <tr>
-                            {% for column in property %}
+                            {% for column in property[1:] %}
                                 <td>{{ column }}</td>
                             {% endfor %}
                             <td>
@@ -54,6 +54,14 @@
     <br><br>
     <hr>
     <div>
-        <h1> Join our Rewards Program! </hr>
-        </div>
+        <h1> Join our Rewards Program! </h1>
+        <p><a href="{{ url_for('account') }}">
+            <button type="button"> Join! </button>
+        </a></p>
+    </div>
+    <br>
+    <img href="{{ url_for('static', filename='images/house.jpg') }}" alt="hous">
+    <div>
+        <img src="/static/images/house.jpg" alt="house image">
+    </div>
 {% endblock %}

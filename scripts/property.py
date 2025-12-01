@@ -49,7 +49,7 @@ def search_properties(street, city, state, zip_code):
     return execute_query(query, tuple(params), fetch_mode='all')
 
 def get_random_properties():
-    query = "Select street, state, description FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
+    query = "Select property_id, street, state, description FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
     params = []
     return execute_query(query, tuple(params), fetch_mode='all')
 

@@ -54,7 +54,7 @@ def logout():
 def home():
     headers, results = get_random_properties()
 
-    display_headers = headers
+    display_headers = headers[1:]
     return render_template('home.html',
                            headers=display_headers, 
                            properties=results)
@@ -147,11 +147,10 @@ def search():
 # TODO- add a property details page and book from there instead of currently booking
 #  directly from  the search results?
 
-# Renter- Booking Page
+# Renter- Property Details/Booking Page
 # TODO- Renters select a property, rental period, and payment method.
 # TODO- Booking details show rental period, total cost, and payment method.
-@app.route('/book/<property_id>', methods=['GET', 'POST'])
-@login_required
+@app.route('/property-details/<property_id>', methods=['GET', 'POST'])
 def book_property(property_id):
     property_details = get_property_details(property_id)
     if request.method == 'POST':
@@ -160,7 +159,7 @@ def book_property(property_id):
         return render_template('book/confirmation.html', property=property_details)
     else:
         if property_details:
-            return render_template('book/create-book.html', property=property_details)
+            return render_template('book/prop-details.html', property=property_details)
         else:
             abort(404)
 

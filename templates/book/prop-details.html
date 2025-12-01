@@ -1,26 +1,62 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    {% block title %}Book {{ property.street }}{% endblock %}
+    {% block title %}Property {{ property.street }}{% endblock %}
 {% endblock %}
 
 {% block content %}
     <div class='book'>
-        <h1>Booking Details for: {{ property.street }}, {{ property.city }}</h1>
+        <h1>Property Details for: {{ property.street }}, {{ property.city }}</h1>
         <h2>Property Information</h2>
         Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
         <br><br>
         add more details
-        <h2>Book Now</h2>
-        {% for message in get_flashed_messages() %}
-            <div class='flash'>{{ message }}</div>
-        {% endfor %}
-        <form method="post">
-            select payment details
-            <br><br>
-            <button type="submit">Confirm Booking</button>
-        </form>
-        <br><br>
+        {% if not g.user['agency'] %}
+            <h2>Book Now</h2>
+            {% for message in get_flashed_messages() %}
+                <div class='flash'>{{ message }}</div>
+            {% endfor %}
+            <!-- add check for if property.availiability = true to show booking button -->
+                <div id='bookingForm' style='display: none;'>
+                    <form method="post">
+                        select rental period
+                        <br>
+                        select or add payment details
+                        <br><br>
+                        <button type="submit">Confirm Booking</button>
+                    </form>
+                    <br>
+                </div>
+                {% if g.user %}
+                    <button id='book' onclick='toggleBookingForm()'>Book</button>
+                {% else %}
+                    <a href="{{ url_for('login') }}"><button>Book</button></a>
+                {% endif %}
+        <br>
+        <!-- add agent edit property ability? -->
+        {% endif %}
         <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
     </div>
+    <script>
+        function toggleBookingForm() {
+            const bookButton = document.getElementById('book');
+            const bookingForm = document.getElementById('bookingForm');
+            
+            if (bookButton.click && bookingForm.style.display == 'none') {
+                bookingForm.style.display = 'block';
+                bookButton.textContent = 'Cancel Booking'
+                // *.required = true;
+            } else {
+                bookingForm.style.display = 'none';
+                bookButton.textContent = 'Book'
+                //*.required = false;
+                
+                // Optional: Clear the input when hidden
+                // *.value = ''; 
+            }
+        }
+
+        // Run the check once when the page loads, in case the browser remembers the state
+        document.addEventListener('DOMContentLoaded', toggleAgencyField);
+    </script>
 {% endblock %}

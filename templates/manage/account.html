@@ -11,7 +11,6 @@
             <div class='flash'>{{ message }}</div>
         {% endfor %}
         <form method='post'>
-            <!-- TODO- add if statement to check if renter or agent -->
             {% if g.user['agency'] %}
                 <h2>Agent Info</h2>
                 <label for='agency'>Agency:</label>
@@ -55,5 +54,6 @@
             <input type='submit' value='Save'>
         </form>
         <br><br>
+        
     </div>
 {% endblock %}
