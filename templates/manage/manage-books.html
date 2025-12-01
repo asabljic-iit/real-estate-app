@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    {% block title %}Manage Properties{% endblock %}
+    {% block title %}Manage Bookings{% endblock %}
 {% endblock %}
 
 {% block content %}
-    <div class='manage-prop'>
-        <h1>Manage Properties</h1>
+    <div class='manage-books'>
+        <h1>Manage Bookings</h1>
         {% for message in get_flashed_messages() %}
             <div class='flash'>{{ message }}</div>
         {% endfor %}

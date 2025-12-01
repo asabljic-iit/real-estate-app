@@ -2,7 +2,11 @@ import functools
 import psycopg2
 from flask import Flask, render_template, request, flash, abort, g, session
 from flask import redirect, url_for
-from scripts.db_functions import *
+from scripts.misc import *
+from scripts.account import *
+from scripts.auth import *
+from scripts.book import *
+from scripts.property import *
 
 app = Flask(__name__)
 app.config.from_mapping(SECRET_KEY='dev')
@@ -48,10 +52,12 @@ def logout():
 # Home Page
 @app.route('/')
 def home():
-    #headers, results = random_properties()
+    headers, results = get_random_properties()
 
-    #display_headers = headers[1:]
-    return render_template('home.html')
+    display_headers = headers
+    return render_template('home.html',
+                           headers=display_headers, 
+                           properties=results)
 
 # User Register Page
 # Both agents and prospective renters can register with an email and personal information.
@@ -102,7 +108,7 @@ def account():
     if request.method == 'POST':
         flash('whoopsie')
 
-    return render_template('auth/account.html')
+    return render_template('manage/account.html')
 
 # Agent- Manage Properties Page
 # TODO- add, manage, delete properties
@@ -112,7 +118,7 @@ def manage_properties():
     if request.method == 'POST':
         flash('whoopsie')
 
-    return render_template('auth/manage-prop.html')
+    return render_template('manage/manage-props.html')
 
 # Search Results Page
 # Search by location, TODO- rental/sale type, number of bedrooms, price range,
@@ -133,7 +139,7 @@ def search():
 
     display_headers = headers[1:]
     
-    return render_template('property_results.html', 
+    return render_template('prop-results.html', 
                            headers=display_headers, 
                            properties=results, 
                            search_params=request.args)
@@ -151,10 +157,10 @@ def book_property(property_id):
     if request.method == 'POST':
         # flash('whoopsie')
         # success = save_booking(property_id, user_name, ...)
-        return render_template('confirmation.html', property=property_details)
+        return render_template('book/confirmation.html', property=property_details)
     else:
         if property_details:
-            return render_template('auth/book.html', property=property_details)
+            return render_template('book/create-book.html', property=property_details)
         else:
             abort(404)
 
@@ -169,7 +175,7 @@ def manage_booking():
     if request.method == 'POST':
         flash('whoopsie')
 
-    return render_template('auth/manage-book.html')
+    return render_template('manage/manage-books.html')
 
 if __name__ == '__main__':
     app.run(debug=True) # debug=True allows editing w/o having to restart server
