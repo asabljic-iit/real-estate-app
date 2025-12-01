@@ -12,7 +12,7 @@
         {% endfor %}
         <form method='post'>
             <!-- TODO- add if statement to check if renter or agent -->
-            {% if g.user[1] == 'dev@test.com' %}
+            {% if g.user['agency'] %}
                 <h2>Agent Info</h2>
                 <label for='agency'>Agency:</label>
                 <input name='agency' id='agency'>
@@ -22,8 +22,7 @@
                 <br><br>
                 <label for='phone'>Phone Number:</label>
                 <input type='tel' name='phone' id='phone'>
-            <!--  else  -->
-            {% endif %}
+            {% else %}
                 <h2>Preferences</h2>
                 <label for='movein'>Move-In Date:</label>
                 <input type='date' name='movein' id='movein'>
@@ -51,7 +50,7 @@
                 <input name='state' id='state' size='5' required>
                 <label for='zipcode'>Zip Code:</label>
                 <input name='zipcode' id='zipcode' size='10' required>
-            <!--  endif  -->
+            {%  endif  %}
             <br><br>
             <input type='submit' value='Save'>
         </form>

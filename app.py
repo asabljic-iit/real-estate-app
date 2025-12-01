@@ -25,8 +25,7 @@ def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
     the database into ``g.user``."""
     user_id = session.get('user_id')
-
-    #TODO- write g.agent and agent_id
+    
     if user_id is None:
         g.user = None
     else:
@@ -49,6 +48,9 @@ def logout():
 # Home Page
 @app.route('/')
 def home():
+    #headers, results = random_properties()
+
+    #display_headers = headers[1:]
     return render_template('home.html')
 
 # User Register Page

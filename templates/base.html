@@ -10,7 +10,7 @@
             {% if g.user %}
                 <li><a href="{{ url_for('account') }}">{{ g.user['name'] }}</span>
                 <!-- TODO: check if user is agent -->
-                {% if get_agency(g.user['user_id']) %}
+                {% if g.user['agency'] %}
                     <li><a href="{{ url_for('manage_properties') }}">Manage Properties</span>
                 {% endif %}
                 <li><a href="{{ url_for('manage_booking') }}">Manage Bookings</span>
