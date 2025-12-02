@@ -33,7 +33,7 @@ CREATE TABLE Renter (
 	renter_id SERIAL PRIMARY KEY,
 	desired_move_in_date DATE,								
 	preferred_location TEXT,
-	budget DECIMAL(10,2),
+	budget DECIMAL(10),
 	FOREIGN KEY (renter_id) REFERENCES Users(user_id)
 		ON DELETE CASCADE
 );
@@ -86,6 +86,8 @@ CREATE TABLE Neighborhood (
 	crime_rate DECIMAL(3, 2)
 );
 
+CREATE TYPE pt AS ENUM('House', 'Apartment', 'CommercialBuilding', 'VacationHome', 'Land');
+
 CREATE TABLE Property (
 	property_id SERIAL PRIMARY KEY,
 	agency TEXT NOT NULL,
@@ -95,11 +97,12 @@ CREATE TABLE Property (
 	description TEXT,
 	availability BOOLEAN DEFAULT TRUE,
 	sq_footage INT,
-	price DECIMAL(10,2),
+	price DECIMAL(10),
 	street TEXT,
 	city TEXT,
 	state TEXT,
 	zip_code TEXT,
+	prop_type pt NOT NULL,
 	FOREIGN KEY (neighborhood_id) REFERENCES Neighborhood(neighborhood_id)
 		ON DELETE SET NULL
 );

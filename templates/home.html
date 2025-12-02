@@ -8,15 +8,24 @@
     <div class='mainSearch'>
         <h1>Property Search</h1>
         <form action='/search' method='GET'>
-            <label for='street'>Street:</label>
-            <input type='text' id='street' name='street'>
-            <label for='city'>City:</label>
-            <input type='text' id='city' name='city'>
+            <input type='text' id='street' name='street' placeholder="Street">
+            <input type='text' id='city' name='city' placeholder="City">
+            <input type='text' id='state' name='state' size='1' placeholder="State">
+            <input type='text' id='zip_code' name='zip_code' size='4' placeholder="Zip Code">
             <br><br>
-            <label for='state'>State:</label>
-            <input type='text' id='state' name='state' size='5'>
-            <label for='zip_code'>Zip Code:</label>
-            <input type='text' id='zip_code' name='zip_code' size='10'>
+            <input type='number' id='num_rooms' style='width: 8.5ch;' name='num_rooms' min='0' placeholder="Rooms">
+            <input type='number' id='price_min' style='width: 10.5ch; margin-right: 0;' name='price_min' min='0' placeholder="Min Price">
+            -
+            <input type='number' id='price_max' style='width: 10.5ch; margin-left: 0;' name='price_max' min='0' placeholder="Max Price">
+            <select name='prop_type' id='prop_type'>
+                <option selected value=''>Property Type</option>
+                <option value='House'>House</option>
+                <option value='Apartment'>Apartment</option>
+                <option value='CommercialBuilding'>Commercial Building</option>
+                <option value='VacationHome'>Vacation Home</option>
+                <option value='Land'>Land</option>
+            </select>
+            <input type='date' id='desired_date' name='desired_date' placeholder="Desired Date">
             <br><br>
             <button type='submit'>Search Properties</button>
         </form>
@@ -25,43 +34,29 @@
     <hr>
     <section class='featured'>
         <h1>Take a look at some of our properties!</h1>
-        <div class="results">
-            <table>
-                <thead>
-                    <tr>
-                        {% for header in headers %}
-                            <th>{{ header }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for property in properties %}
-                        <tr>
-                            {% for column in property[1:] %}
-                                <td>{{ column }}</td>
-                            {% endfor %}
-                            <td>
-                                <a href="{{ url_for('book_property', property_id=property[0]) }}">
-                                    <button type="button">See details</button>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="cards">
+            {% for property in properties %}
+                <a class="card" href="{{ url_for('book_property', property_id=property[0]) }}" aria-label="View details for {{ property[1] }}, {{ property[2] }}">
+                    <div class="topHalf">
+                        <img src="/static/assets/{{property[5]}}.jpg" alt="piccyture" style="width: 100%; height: fit-content;">
+                    </div>
+                    <div>
+                        <h3>{{ property[1] }}, {{ property[2] }}</h3>
+                    </div>
+                    <p>{{ property[3] }}</p>
+
+                    <div>
+                        <span>${{property[4]}}</span>
+                    </div>
+                    <br>
+                </a>
+            {% endfor %}
         </div>
     </section>
     <br><br>
-    <hr>
-    <div>
-        <h1> Join our Rewards Program! </h1>
-        <p><a href="{{ url_for('account') }}">
-            <button type="button"> Join! </button>
-        </a></p>
-    </div>
-    <br>
-    <img href="{{ url_for('static', filename='images/house.jpg') }}" alt="hous">
-    <div>
-        <img src="/static/images/house.jpg" alt="house image">
+    <div class="rewardsButton">
+        <a href="{{ url_for('account') }}">
+            <h1> While you're here join our Rewards Program! </h1>
+        </a>
     </div>
 {% endblock %}

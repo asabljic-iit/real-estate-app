@@ -1,10 +1,66 @@
-/* base Styles */
-body {
-  font-family: Arial, sans-serif;
+/* ---------------------------------- */
+/* 🎨 Material Design Theme Variables */
+/* ---------------------------------- */
+:root {
+  /* NEW M2 Color Palette: Based on #6c6f85 (Grayish Blue) */
+  --md-color-primary: #6c6f85;        /* New Primary Color */
+  --md-color-secondary: #00bcd4;      /* A complementary bright teal for accents */
+  --md-color-surface: #FFFFFF;        /* White background for components */
+  --md-color-background: #F5F5F5;     /* Light gray page background */
+  --md-color-on-primary: #FFFFFF;     /* White text on the primary color */
+  --md-color-on-surface: #000000;
+  
+  /* M2 Elevation (Shadows) - Remains the same */
+  --md-shadow-2dp: 0 3px 1px -2px rgba(0,0,0,0.2), 
+                   0 2px 2px 0 rgba(0,0,0,0.14), 
+                   0 1px 5px 0 rgba(0,0,0,0.12);
+  --md-shadow-4dp: 0 2px 4px -1px rgba(0,0,0,0.2), 
+                   0 4px 5px 0 rgba(0,0,0,0.14), 
+                   0 1px 10px 0 rgba(0,0,0,0.12);
 }
 
-input, button {
-  padding: 0.5em;
+/* ---------------------------------- */
+/* /* 🖋️ Base Styles & Typography */
+/* ---------------------------------- */
+body {
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+  background-color: var(--md-color-background);
+  color: var(--md-color-on-surface);
+  margin: 0; 
+}
+
+/* Standardized input/control styling */
+input, button, select {
+  padding: 0.5em 1em; 
+  margin: 0 0.25em;
+  border-radius: 4px; 
+  border: 1px solid rgba(0, 0, 0, 0.23); 
+  background-color: var(--md-color-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Material Design Focus State (UPDATED GLOW COLOR) */
+input:focus, button:focus, select:focus {
+  outline: none; 
+  border-color: var(--md-color-primary); 
+  /* Custom Focus Glow using the new primary color */
+  box-shadow: 0 0 0 3px rgba(108, 111, 133, 0.3); /* Based on #6c6f85 */
+}
+
+/* Material Design Button Styling (UPDATED BACKGROUND COLOR) */
+button {
+    background-color: var(--md-color-primary);
+    color: var(--md-color-on-primary);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.0892857143em;
+    font-weight: 500;
+    box-shadow: var(--md-shadow-2dp); 
+}
+
+button:hover {
+    box-shadow: var(--md-shadow-4dp); 
 }
 
 div {
@@ -16,7 +72,7 @@ section {
   text-align: center;
 }
 
-div h1 h2 h3 {
+div h1, div h2, div h3 {
   margin: 0.5rem 0;
 }
 
@@ -30,18 +86,27 @@ nav ul {
 nav h1 a {
   text-decoration: none;
   padding: 0.25rem 0.5rem;
+  color: var(--md-color-on-surface);
 }
 
 div table {
   margin: 0 auto;
 }
 
-/* Layout/Structure */
+/* ---------------------------------- */
+/* /* ⚙️ Layout/Structure */
+/* ---------------------------------- */
 nav {
-  background: lightgray;
+  /* App Bar styled with the NEW PRIMARY COLOR */
+  background: var(--md-color-primary);
+  color: var(--md-color-on-primary);
   display: flex;
   align-items: center;
   padding: 0 0.5rem;
+  box-shadow: var(--md-shadow-4dp); 
+  position: sticky; 
+  top: 0;
+  z-index: 100;
 }
 
 nav h1 {
@@ -49,38 +114,257 @@ nav h1 {
   margin: 0;
 }
 
-/* Modules/Components */
+nav h1 a {
+    color: var(--md-color-on-primary); 
+}
+
+/* ---------------------------------- */
+/* /* 🧩 Modules/Components */
+/* ---------------------------------- */
 nav ul li a,
 nav ul li span,
 header .action {
   display: block;
-  padding: 0.5rem;
-}
-
-input, button {
-  padding: 0.5em;
+  padding: 0.75rem; 
+  color: var(--md-color-on-primary);
 }
 
 .auth {
-  margin: 0 25%;
+  max-width: 500px; 
+  margin: 2rem auto; 
 }
 
 .auth form {
-  display: inline-block;
-  margin: 0 25%;
-  text-align: right;
+  display: block; 
+  max-width: 300px; 
+  margin: 0 auto;
+  text-align: left; 
 }
 
 input[type='submit'] {
+  /* Styling submit as a standard Material button */
   display: block;
-  margin: 0 auto;
-  width: auto;
+  margin: 1rem auto;
+  width: 100%;
+  text-transform: uppercase;
+  background-color: var(--md-color-primary); /* NEW PRIMARY COLOR */
+  color: var(--md-color-on-primary);
+  border: none;
+  box-shadow: var(--md-shadow-2dp);
 }
 
-/* Themes/States */
+/* ---------------------------------- */
+/* /* 📢 Themes/States (Feedback) */
+/* ---------------------------------- */
 .flash {
-  margin: 0.5em 0;
+  /* Using a subtle, non-branded color for informational flash messages */
+  margin: 1rem auto;
   padding: 1em;
-  background: #cae6f6;
-  border: 1px solid #377ba8;
+  background: #E0E0E0; /* Light Gray 200 */
+  color: #424242; /* Dark Gray text */
+  border: none; 
+  border-left: 5px solid #757575; /* Gray 600 accent */
+  border-radius: 4px;
+  max-width: 80%;
+}
+
+/* ---------------------------------- */
+/* /* 🏠 Home Page Components */
+/* ---------------------------------- */
+.cards {
+  display: grid;
+  gap: 1.5rem; 
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  justify-content: center;
+  padding: 2rem;
+}
+
+.card {
+  display: flex; 
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--md-color-on-surface);
+  background-color: var(--md-color-surface);
+  width: 100%; 
+  border: none; 
+  border-radius: 8px; 
+  padding: 0; 
+  box-shadow: var(--md-shadow-2dp); 
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.card:hover {
+    box-shadow: var(--md-shadow-4dp); 
+    transform: translateY(-2px);
+}
+
+.topHalf {
+  padding: 16px; 
+  /* This was already using #6c6f85, but now it uses the variable */
+  background-color: var(--md-color-primary); 
+  color: var(--md-color-on-primary);
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.rewardsButton {
+  border: none;
+  margin: 2rem auto;
+  border-radius: 4px;
+  max-width: 750px;
+  width: 90%;
+  padding: 16px;
+  box-shadow: var(--md-shadow-2dp);
+  background-color: var(--md-color-surface);
+}
+
+.propInfoTop {
+  border: 1px solid rgba(0, 0, 0, 0.12); 
+  border-radius: 4px;
+  width: fit-content;
+  margin: 1rem auto;
+  padding: 8px 16px;
+}
+
+.backButton {
+  position: absolute;
+  padding: 0;
+  top: 74px; 
+  left: 48px;
+  cursor: pointer;
+  background-color: rgba(0,0,0,0);
+  color: var(--md-color-primary); /* NEW PRIMARY COLOR */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add vertical spacing between form elements */
+.form-field {
+    margin-bottom: 1.5rem; 
+    text-align: left; /* Aligns labels to the left */
+}
+
+.form-field input {
+    width: 100%; /* Makes the input stretch to fill the form width */
+    box-sizing: border-box; /* Includes padding/border in the element's total width */
+    margin-top: 0.5rem;
+}
+
+/* For the Register button: create a low-emphasis M2 button */
+.text-button {
+    background: none; /* No background color */
+    color: var(--md-color-primary); /* Use primary color for text */
+    box-shadow: none; /* No shadow */
+    padding: 0.5em 0;
+    border: none;
+}
+
+.text-button:hover {
+    box-shadow: none;
+    background-color: rgba(108, 111, 133, 0.1); /* Subtle hover effect */
+    transform: none;
+}
+
+.auth-actions {
+    margin-top: 2rem;
+}
+
+/* Styling for the Account Type Fieldset (radio buttons) */
+.form-field-group {
+    /* Use for consistent spacing */
+    margin-bottom: 1.5rem;
+    border: none;
+    padding: 0;
+}
+
+.form-field-group legend {
+    /* Style the legend to look like a label */
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block; /* Ensures it takes full width */
+}
+
+.radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem; /* Space between Renter and Agent options */
+}
+
+.radio-group label {
+    /* Adjust label styling for radio buttons */
+    margin-left: 0.25rem;
+    font-weight: 400; /* Regular weight */
+}
+
+/* Ensure form fields align well */
+.form-field {
+    margin-bottom: 1.5rem; 
+    text-align: left; /* Aligns labels to the left */
+}
+
+.form-field input {
+    width: 100%; 
+    box-sizing: border-box;
+    margin-top: 0.5rem;
+}
+
+/* Secondary action link style */
+.text-button {
+    background: none; 
+    color: var(--md-color-primary); 
+    box-shadow: none; 
+    padding: 0.5em 0;
+    border: none;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.text-button:hover {
+    box-shadow: none;
+    background-color: rgba(108, 111, 133, 0.1);
+    transform: none;
+}
+
+/* ---------------------------------- */
+/* 🔘 Button-Style Radio Group */
+/* ---------------------------------- */
+
+/* 1. Hide the actual radio input element */
+.hidden-radio {
+    /* Visually hide the input but keep it accessible for screen readers */
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 2. Style the Label to look like a standard, unselected button (M2 Outlined/Tonal Button) */
+.radio-button-label {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5em 1.5em; /* Button padding */
+    border-radius: 4px;
+    
+    /* Unselected State: Subtle gray border and white background (Surface color) */
+    border: 1px solid rgba(0, 0, 0, 0.23); 
+    background-color: var(--md-color-surface);
+    color: var(--md-color-on-surface);
+    
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* 3. Define the Selected State: Target the label immediately following the CHECKED radio input */
+.hidden-radio:checked + .radio-button-label {
+    /* Selected State: Background changes to Primary Color, Text changes to On-Primary */
+    background-color: var(--md-color-primary);
+    color: var(--md-color-on-primary);
+    border-color: var(--md-color-primary); /* Ensures a solid look */
+}
+
+/* 4. Optional: Add a subtle hover effect for unselected buttons */
+.radio-button-label:hover {
+    background-color: rgba(108, 111, 133, 0.1); /* Light background tint on hover */
 }

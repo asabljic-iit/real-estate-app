@@ -1,45 +1,77 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    {% block title %}Register{% endblock %}
+    {% block title %}Create Account{% endblock %}
 {% endblock %}
 
 {% block content %}
     <div class='auth'>
         <h1>Register</h1>
+        
+        {# Display Flash Messages with A11y role #}
         {% for message in get_flashed_messages() %}
-            <div class='flash'>{{ message }}</div>
+            <div class='flash' role='alert'>{{ message }}</div>
         {% endfor %}
-        <form method='post'>
-            <label for='acctype'>Are you a:</label>
-            <input type='radio' name='acctype' id='renter' onclick='toggleAgencyField()' required>
-            <label for='renter'>Renter</label>
-            <input type='radio' name='acctype' id='agent' onclick='toggleAgencyField()' required>
-            <label for='agent'>Agent</label>
-            <br><br>
-            <div id='agencyField' style='display: none; padding: 0; text-align: right;'>
-                <label for='agency'>Agency:</label>
-                <input name='agency' id='agency' required>
-                <br><br>
+        
+        <form method='post' class='register-form'>
+            
+            {# Account Type Radio Group - Grouped for A11y and UX #}
+            <fieldset class='form-field-group'>
+                
+                <div class='radio-group'>
+                    <input type='radio' name='acctype' id='renter' value='renter' 
+                        onclick='toggleAgencyField()' required checked class='hidden-radio'>
+                    <label for='renter' class='radio-button-label'>Renter</label>
+                    
+                    <input type='radio' name='acctype' id='agent' value='agent' 
+                        onclick='toggleAgencyField()' required class='hidden-radio'>
+                    <label for='agent' class='radio-button-label'>Agent</label>
+                </div>
+            </fieldset>
+
+            {# Hidden Agency Field - Styled to be a standard form field #}
+            <div id='agencyField' class='form-field' style='display: none;'>
+                <label for='agency'>Agency Name</label>
+                <input name='agency' id='agency' 
+                       placeholder='e.g., Prime Real Estate' required>
             </div>
-            <label for='email'>Email:</label>
-            <input type='email' name='email' id='email' required>
-            <br><br>
-            <label for='name'>Name:</label>
-            <input name='name' id='name' required>
-            <br><br>
-            <label for='password'>Password:</label>
-            <input type='password' name='password' id='password' required>
-            <br><br>
+
+            <div class='form-field'>
+                <label for='email'>Email Address</label>
+                <input type='email' name='email' id='email' 
+                       placeholder='you@example.com' required 
+                       autocomplete='email'>
+            </div>
+            
+            <div class='form-field'>
+                <label for='name'>Full Name</label>
+                <input name='name' id='name' 
+                       placeholder='John Doe' required 
+                       autocomplete='name'>
+            </div>
+            
+            <div class='form-field'>
+                <label for='password'>Password</label>
+                <input type='password' name='password' id='password' 
+                       placeholder='Create a strong password' required 
+                       autocomplete='new-password'>
+            </div>
+            
             <input type='submit' value='Register'>
+            
         </form>
-        <br><br>
-        <a href="{{ url_for('login') }}"><button>Login Instead</button></a>
+        
+        <div class='auth-actions'>
+            <p>Already have an account?</p>
+            <a href="{{ url_for('login') }}" class='secondary-action-link'>
+                <button type='button' class='text-button'>Login Instead</button>
+            </a>
+        </div>
     </div>
 
     <script>
         function toggleAgencyField() {
-            // Get the radio buttons and the field container
+            // Get the radio button values and the field container
             const agentRadio = document.getElementById('agent');
             const agencyField = document.getElementById('agencyField');
             const agencyNameInput = document.getElementById('agency');
@@ -53,12 +85,12 @@
                 agencyField.style.display = 'none';
                 agencyNameInput.required = false;
                 
-                // Optional: Clear the input when hidden
+                // Crucial for server-side processing: clear the value when hidden
                 agencyNameInput.value = ''; 
             }
         }
 
-        // Run the check once when the page loads, in case the browser remembers the state
+        // Run the check once when the page loads, ensuring correct initial state
         document.addEventListener('DOMContentLoaded', toggleAgencyField);
     </script>
 {% endblock %}

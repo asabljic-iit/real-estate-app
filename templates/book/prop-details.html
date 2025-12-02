@@ -6,11 +6,20 @@
 
 {% block content %}
     <div class='book'>
-        <h1>Property Details for: {{ property.street }}, {{ property.city }}</h1>
+        <h1>Property Details for:<div class="propInfoTop"> {{ property.street }}, {{ property.city }}</div></h1>
+        <p></p>
+        <img src="/static/assets/{{property.prop_type}}.jpg" style="width: 500px;height: 300px;">
+        <p>{{ property.description  }}</p>
+        <br>
         <h2>Property Information</h2>
-        Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
+        <p>Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}</p>
+        <p>Price: ${{property.price}}</p>
+        <p>Room Amount: {{ property.num_rooms  }}</p>
+        <p>Sq ft: {{  property.sq_footage  }}</p>
+        <p>Type: {{ property.prop_type  }}</p>
+
         <br><br>
-        add more details
+        
         {% if not g.user['agency'] %}
             <h2>Book Now</h2>
             {% for message in get_flashed_messages() %}
@@ -35,7 +44,7 @@
         <br>
         <!-- add agent edit property ability? -->
         {% endif %}
-        <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
+        <div class="backButton"><p><button onclick="history.back()">↩</button></div></p>
     </div>
     <script>
         function toggleBookingForm() {

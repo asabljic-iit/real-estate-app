@@ -121,8 +121,8 @@ def manage_properties():
     return render_template('manage/manage-props.html')
 
 # Search Results Page
-# Search by location, TODO- rental/sale type, number of bedrooms, price range,
-#  property type, and desired date.
+# Search by location, TODO- rental/sale type (dropdown), number of bedrooms (num),
+#  price range (num min, range max), property type, and desired date.
 # Only available properties meeting all criteria are shown. (i think this is implemented?)
 # TODO- Results display price, bedrooms, property type, and description.
 # TODO- Users can sort results by price or number of bedrooms.
@@ -133,9 +133,19 @@ def search():
     city = request.args.get('city', '')
     state = request.args.get('state', '')
     zip_code = request.args.get('zip_code', '')
+    num_rooms = request.args.get('num_rooms', '')
+    price_min = request.args.get('price_min', '')
+    price_max = request.args.get('price_max', '')
+    prop_type = request.args.get('prop_type', '')
+    desired_date = request.args.get('desired_date', '')
+    
+
+    print(num_rooms, price_min, price_max, prop_type, desired_date, )
     
     # Call a new database function to filter the properties
-    headers, results = search_properties(street, city, state, zip_code)
+    headers, results = search_properties(street, city, state, zip_code,
+                                         num_rooms, price_min, price_max,
+                                         prop_type, desired_date)
 
     display_headers = headers[1:]
     
