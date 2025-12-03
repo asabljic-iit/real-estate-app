@@ -11,8 +11,8 @@ INSERT INTO UserAddress (user_id, street, city, state, zip_code) VALUES
 (2, '456 Oak Ave', 'Smallville', 'TX', '77001');
 
 INSERT INTO Renter (renter_id, desired_move_in_date, preferred_location, budget) VALUES
-(1, '2026-03-01', 'Downtown', 2500.00), -- Alice Johnson (user_id 1)
-(2, '2026-05-15', 'Suburbia', 1800.00);  -- Bob Smith (user_id 2)
+(1, '2026-03-01', 'Downtown', 2500), -- Alice Johnson (user_id 1)
+(2, '2026-05-15', 'Suburbia', 1800);  -- Bob Smith (user_id 2)
 
 INSERT INTO Agent (agent_id, agency, job_title, phone_number) VALUES
 (3, 'Top Realty', 'Senior Agent', 5551234223), -- Charlie Brown (user_id 3)
@@ -30,11 +30,11 @@ INSERT INTO Neighborhood (nearby_school_count, crime_rate) VALUES
 (1, 3.50); -- The City Center
 
 INSERT INTO Property (property_id, agency, neighborhood_id, location, num_rooms, description, availability, sq_footage, price, street, city, state, zip_code, prop_type) VALUES
-(101, 'Top Realty', 1, 'Northside', 3, 'Modern family home', TRUE, 1800, 350000.00, '789 Pine Ln', 'Anytown', 'CA', '90210', 'House'),   -- House
-(102, 'Top Realty', 2, 'Midtown', 1, 'Studio apartment', TRUE, 500, 1800.00, '101 Blvd', 'Smallville', 'TX', '77001', 'Apartment'),        -- Apartment
-(103, 'Top Realty', 1, 'Northside', 0, 'Open lot for development', TRUE, 10000, 150000.00, '202 Vacant Rd', 'Anytown', 'CA', '90210', 'Land'), -- Land
-(104, 'City Homes', 2, 'Beachfront', 4, 'Luxury vacation rental', FALSE, 2500, 500.00, '303 Ocean Dr', 'Anytown', 'CA', '90210', 'VacationHome'),  -- VacationHome
-(105, 'City Homes', 2, 'City Center', 0, 'Commercial retail space', TRUE, 3000, 750000.00, '404 Market St', 'Smallville', 'TX', '77001', 'CommercialBuilding'); -- CommercialBuilding
+(101, 'Top Realty', 1, 'Northside', 3, 'Modern family home', TRUE, 1800, 350000, '789 Pine Ln', 'Anytown', 'CA', '90210', 'House'),   -- House
+(102, 'Top Realty', 2, 'Midtown', 1, 'Studio apartment', TRUE, 500, 1800, '101 Blvd', 'Smallville', 'TX', '77001', 'Apartment'),        -- Apartment
+(103, 'Top Realty', 1, 'Northside', 0, 'Open lot for development', TRUE, 10000, 150000, '202 Vacant Rd', 'Anytown', 'CA', '90210', 'Land'), -- Land
+(104, 'City Homes', 2, 'Beachfront', 4, 'Luxury vacation rental', FALSE, 2500, 500, '303 Ocean Dr', 'Anytown', 'CA', '90210', 'VacationHome'),  -- VacationHome
+(105, 'City Homes', 2, 'City Center', 0, 'Commercial retail space', TRUE, 3000, 750000, '404 Market St', 'Smallville', 'TX', '77001', 'CommercialBuilding'); -- CommercialBuilding
 
 INSERT INTO Booking (renter_id, property_id, start_date, end_date) VALUES
 (1, 104, '2026-01-01', '2026-01-14'); -- Alice Johnson booked the VacationHome (104)

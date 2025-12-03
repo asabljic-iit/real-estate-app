@@ -1,16 +1,13 @@
-/* ---------------------------------- */
-/* 🎨 Material Design Theme Variables */
-/* ---------------------------------- */
+/* Material Design Theme Variables */
 :root {
-  /* NEW M2 Color Palette: Based on #6c6f85 (Grayish Blue) */
-  --md-color-primary: #6c6f85;        /* New Primary Color */
+  --md-color-primary: #6c6f85;        /* Primary Color */
   --md-color-secondary: #00bcd4;      /* A complementary bright teal for accents */
   --md-color-surface: #FFFFFF;        /* White background for components */
   --md-color-background: #F5F5F5;     /* Light gray page background */
   --md-color-on-primary: #FFFFFF;     /* White text on the primary color */
   --md-color-on-surface: #000000;
   
-  /* M2 Elevation (Shadows) - Remains the same */
+  /* M2 Elevation (Shadows) */
   --md-shadow-2dp: 0 3px 1px -2px rgba(0,0,0,0.2), 
                    0 2px 2px 0 rgba(0,0,0,0.14), 
                    0 1px 5px 0 rgba(0,0,0,0.12);
@@ -19,14 +16,22 @@
                    0 1px 10px 0 rgba(0,0,0,0.12);
 }
 
-/* ---------------------------------- */
-/* /* 🖋️ Base Styles & Typography */
-/* ---------------------------------- */
+/* Base Styles & Typography */
 body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
   background-color: var(--md-color-background);
   color: var(--md-color-on-surface);
-  margin: 0; 
+}
+
+html, body, #app-container {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column; 
+}
+
+.main-content {
+    flex-grow: 1; 
 }
 
 /* Standardized input/control styling */
@@ -39,22 +44,21 @@ input, button, select {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Material Design Focus State (UPDATED GLOW COLOR) */
+/* Material Design Focus State */
 input:focus, button:focus, select:focus {
   outline: none; 
   border-color: var(--md-color-primary); 
-  /* Custom Focus Glow using the new primary color */
-  box-shadow: 0 0 0 3px rgba(108, 111, 133, 0.3); /* Based on #6c6f85 */
+  box-shadow: 0 0 0 3px rgba(108, 111, 133, 0.3);
 }
 
-/* Material Design Button Styling (UPDATED BACKGROUND COLOR) */
+/* Material Design Button Styling */
 button {
     background-color: var(--md-color-primary);
     color: var(--md-color-on-primary);
     border: none;
     cursor: pointer;
     text-transform: uppercase;
-    letter-spacing: 0.0892857143em;
+    letter-spacing: 0.0893em;
     font-weight: 500;
     box-shadow: var(--md-shadow-2dp); 
 }
@@ -93,11 +97,8 @@ div table {
   margin: 0 auto;
 }
 
-/* ---------------------------------- */
-/* /* ⚙️ Layout/Structure */
-/* ---------------------------------- */
+/* Layout/Structure */
 nav {
-  /* App Bar styled with the NEW PRIMARY COLOR */
   background: var(--md-color-primary);
   color: var(--md-color-on-primary);
   display: flex;
@@ -118,9 +119,7 @@ nav h1 a {
     color: var(--md-color-on-primary); 
 }
 
-/* ---------------------------------- */
-/* /* 🧩 Modules/Components */
-/* ---------------------------------- */
+/* Modules/Components */
 nav ul li a,
 nav ul li span,
 header .action {
@@ -142,40 +141,46 @@ header .action {
 }
 
 input[type='submit'] {
-  /* Styling submit as a standard Material button */
   display: block;
   margin: 1rem auto;
   width: 100%;
   text-transform: uppercase;
-  background-color: var(--md-color-primary); /* NEW PRIMARY COLOR */
+  background-color: var(--md-color-primary);
   color: var(--md-color-on-primary);
   border: none;
   box-shadow: var(--md-shadow-2dp);
 }
 
-/* ---------------------------------- */
-/* /* 📢 Themes/States (Feedback) */
-/* ---------------------------------- */
+input[type='button'] {
+  display: block;
+  margin: 1rem auto;
+  text-decoration: none;
+  width: 100%;
+  text-transform: uppercase;
+  width: fit-content;
+  border: none;
+  box-shadow: var(--md-shadow-2dp);
+}
+
+/* Themes/States (Feedback) */
 .flash {
-  /* Using a subtle, non-branded color for informational flash messages */
   margin: 1rem auto;
   padding: 1em;
-  background: #E0E0E0; /* Light Gray 200 */
-  color: #424242; /* Dark Gray text */
+  background: #E0E0E0;
+  color: #424242;
   border: none; 
-  border-left: 5px solid #757575; /* Gray 600 accent */
+  border-left: 5px solid #757575;
   border-radius: 4px;
   max-width: 80%;
 }
 
-/* ---------------------------------- */
-/* /* 🏠 Home Page Components */
-/* ---------------------------------- */
+/* Home Page Components */
 .cards {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem; 
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
   justify-content: center;
+  align-items: center;
   padding: 2rem;
 }
 
@@ -185,7 +190,7 @@ input[type='submit'] {
   text-decoration: none;
   color: var(--md-color-on-surface);
   background-color: var(--md-color-surface);
-  width: 100%; 
+  width: 300px; 
   border: none; 
   border-radius: 8px; 
   padding: 0; 
@@ -233,7 +238,7 @@ input[type='submit'] {
   left: 48px;
   cursor: pointer;
   background-color: rgba(0,0,0,0);
-  color: var(--md-color-primary); /* NEW PRIMARY COLOR */
+  color: var(--md-color-primary);
   width: 40px;
   height: 40px;
   display: flex;
@@ -328,9 +333,7 @@ input[type='submit'] {
     transform: none;
 }
 
-/* ---------------------------------- */
-/* 🔘 Button-Style Radio Group */
-/* ---------------------------------- */
+/* Button-Style Radio Group */
 
 /* 1. Hide the actual radio input element */
 .hidden-radio {
@@ -367,4 +370,84 @@ input[type='submit'] {
 /* 4. Optional: Add a subtle hover effect for unselected buttons */
 .radio-button-label:hover {
     background-color: rgba(108, 111, 133, 0.1); /* Light background tint on hover */
+}
+
+/* FOOTER MODULE STYLES */
+
+footer {
+    /* Position the footer at the bottom of the viewport/page */
+    margin-top: auto; /* Pushes the footer down if used with a flex/grid layout on <body> */
+    padding: 2rem 1rem;
+    
+    /* Material Design Colors */
+    background-color: var(--md-color-primary);
+    color: var(--md-color-on-primary); /* White text for contrast */
+    
+    /* M2 Elevation (Optional, but adds a lift/separation) */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); 
+    
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* Container for links and copyright info */
+.footer-content {
+    max-width: 1200px; /* Constrain content width */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem; /* Vertical spacing between sections */
+}
+
+/* Footer Navigation Links */
+.footer-nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap; /* Allows links to wrap on small screens */
+    justify-content: center;
+    gap: 1.5rem; /* Space between links */
+}
+
+.footer-nav a {
+    text-decoration: none;
+    color: var(--md-color-on-primary);
+    padding: 0.5rem 0;
+    opacity: 0.8; /* Subtle transparency */
+    transition: opacity 0.2s;
+}
+
+.footer-nav a:hover {
+    opacity: 1; /* Full opacity on hover */
+    text-decoration: underline;
+}
+
+/* Copyright/Text Section */
+.footer-copyright {
+    opacity: 0.7;
+    margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .footer-content {
+        /* On larger screens, arrange nav and copyright horizontally */
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .footer-logo {
+      display: flex; flex-direction: row; align-items: center;
+    }
+    
+    .footer-nav {
+        order: 2; /* Place nav links to the right */
+    }
+    
+    .footer-copyright {
+        order: 1; /* Place copyright text to the left */
+        margin-top: 0;
+    }
 }

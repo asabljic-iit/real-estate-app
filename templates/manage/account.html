@@ -32,28 +32,54 @@
                 <label for='budget'>Budget:</label>
                 <input type='number' name='budget' id='budget'>
                 <h2>Payment Method</h2>
-                <input type='button' value="Add Payment Method">
-                <h3>Card Details</h3>
-                <label for='cardnum'>Card Number:</label>
-                <input type='number' name='cardnum' id='cardnum' required>
-                <br><br>
-                <label for='expdate'>Expiration Date:</label>
-                <input type='month' name='expdate' id='expdate' required>
-                <h3>Billing Address</h3>
-                <label for='street'>Street:</label>
-                <input name='street' id='street' required>
-                <label for='city'>City:</label>
-                <input name='city' id='city' required>
-                <br><br>
-                <label for='state'>State:</label>
-                <input name='state' id='state' size='5' required>
-                <label for='zipcode'>Zip Code:</label>
-                <input name='zipcode' id='zipcode' size='10' required>
+                <input type='button' id='paymeth' onclick='togglePayMethForm()' value='Add Payment Method'>
+                <div id='paymethForm' style='display: none;'>
+                    <h3>Card Details</h3>
+                    <label for='cardnum'>Card Number:</label>
+                    <input type='number' name='cardnum' id='cardnum'>
+                    <br><br>
+                    <label for='expdate'>Expiration Date:</label>
+                    <input type='month' name='expdate' id='expdate'>
+                    <h3>Billing Address</h3>
+                    <label for='street'>Street:</label>
+                    <input name='street' id='street'>
+                    <label for='city'>City:</label>
+                    <input name='city' id='city'>
+                    <br><br>
+                    <label for='state'>State:</label>
+                    <input name='state' id='state' size='5'>
+                    <label for='zipcode'>Zip Code:</label>
+                    <input name='zipcode' id='zipcode' size='10'>
+                </div>
             {%  endif  %}
-            <br><br>
-            <input type='submit' value='Save'>
+            <br>
+            <input type='submit' value='Save' style="width: fit-content;">
+            <a href="{{ url_for('logout') }}">
+                <input type='button' value='Logout'>
+            </a>
         </form>
         <br><br>
-        
     </div>
+    <script>
+        function togglePayMethForm() {
+            const bookButton = document.getElementById('paymeth');
+            const bookingForm = document.getElementById('paymethForm');
+            
+            if (bookButton.click && bookingForm.style.display == 'none') {
+                bookingForm.style.display = 'block';
+                bookButton.value = 'Cancel';
+                // *.required = true;
+            } else {
+                bookingForm.style.display = 'none';
+                bookButton.value = 'Add Payment Method';
+                //*.required = false;
+                
+                // Optional: Clear the input when hidden
+                // *.value = ''; 
+            }
+        }
+
+        // Run the check once when the page loads, in case the browser remembers the state
+        document.addEventListener('DOMContentLoaded', toggleAgencyField);
+    </script>
 {% endblock %}

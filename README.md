@@ -1,6 +1,8 @@
 # CS 425 Real Estate App
 
-A basic real estate management application. Renters can register, add personal and payment information, search for properties, and book them. Agents can register, add properties, and view bookings.
+A basic real estate management application. Renters can register, add personal
+ and payment information, search for properties, and book them. Agents can
+ register, add properties, and view bookings.
 
 ## Install
 

@@ -18,7 +18,7 @@
         <p>Sq ft: {{  property.sq_footage  }}</p>
         <p>Type: {{ property.prop_type  }}</p>
 
-        <br><br>
+        <br>
         
         {% if not g.user['agency'] %}
             <h2>Book Now</h2>
@@ -28,7 +28,8 @@
             <!-- add check for if property.availiability = true to show booking button -->
                 <div id='bookingForm' style='display: none;'>
                     <form method="post">
-                        select rental period
+                        <input type="date" id="desired_date" name="desired_date" placeholder="Rental Period">
+
                         <br>
                         select or add payment details
                         <br><br>
@@ -41,7 +42,7 @@
                 {% else %}
                     <a href="{{ url_for('login') }}"><button>Book</button></a>
                 {% endif %}
-        <br>
+        <br><br>
         <!-- add agent edit property ability? -->
         {% endif %}
         <div class="backButton"><p><button onclick="history.back()">↩</button></div></p>
@@ -53,11 +54,11 @@
             
             if (bookButton.click && bookingForm.style.display == 'none') {
                 bookingForm.style.display = 'block';
-                bookButton.textContent = 'Cancel Booking'
+                bookButton.textContent = 'Cancel Booking';
                 // *.required = true;
             } else {
                 bookingForm.style.display = 'none';
-                bookButton.textContent = 'Book'
+                bookButton.textContent = 'Book';
                 //*.required = false;
                 
                 // Optional: Clear the input when hidden
