@@ -21,8 +21,9 @@ def save_agent_details(agent_id, agency, job_title, phone_number):
     params = [agency, job_title, phone_number, agent_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
+# Credit Card Functions
 def get_CCN(renter_id):
-    query = 'SELECT * FROM CreditCard WHERE renter_id = %s;' 
+    query = 'SELECT * FROM CreditCard WHERE renter_id = %s' 
     params = [renter_id]
     return execute_query(query, tuple(params), fetch_mode='all')
 
@@ -32,8 +33,14 @@ def save_CCN(renter_id, card_number, expiration_date):
     params = [card_number, renter_id, expiration_date]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
+def delete_CCN(card_number):
+    query = 'DELETE FROM CreditCard WHERE credit_card_no = %s'
+    params = [card_number]
+    return execute_query(query, tuple(params), fetch_mode='commit')
+
+# Address Functions
 def get_addr(user_id):
-    query = 'SELECT * FROM UserAddress WHERE user_id = %s;' 
+    query = 'SELECT * FROM UserAddress WHERE user_id = %s' 
     params = [user_id]
     return execute_query(query, tuple(params), fetch_mode='all')
 
@@ -43,6 +50,28 @@ def save_addr(user_id, street, city, state, zip_code):
     params = [user_id, street, city, state, zip_code]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
+def delete_addr(address_id):
+    query = 'DELETE FROM UserAddress WHERE address_id = %s'
+    params = [address_id]
+    return execute_query(query, tuple(params), fetch_mode='commit')
+
 # Rewards Program Functions
 def get_rewards(renter_id):
-    pass
+    query = "SELECT * FROM RewardsProgram WHERE renter_id = %s"
+    params = [renter_id]
+    return execute_query(query, tuple(params), fetch_mode='one')
+
+def enroll_rewards(renter_id):
+    query = "INSERT INTO RewardsProgram (renter_id, points) VALUES (%s, 0)"
+    params = [renter_id]
+    return execute_query(query, tuple(params), fetch_mode='commit')
+
+def add_rewards_points(renter_id, points):
+    query = "UPDATE RewardsProgram SET points = points + %s WHERE renter_id = %s"
+    params = [points, renter_id]
+    return execute_query(query, tuple(params), fetch_mode='commit')
+
+def redeem_rewards_points(renter_id, points):
+    query = "UPDATE RewardsProgram SET points = points - %s WHERE renter_id = %s AND points >= %s"
+    params = [points, renter_id, points]
+    return execute_query(query, tuple(params), fetch_mode='commit')

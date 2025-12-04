@@ -7,9 +7,15 @@
 {% block content %}
     <div class='account'>
         <h1>Your Account</h1>
-        {% for message in get_flashed_messages() %}
-            <div class='flash'>{{ message }}</div>
-        {% endfor %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         <form method='post'>
             {% if g.user['agency'] %}
                 <h2>Agent Info</h2>
@@ -75,8 +81,5 @@
                 // *.value = ''; 
             }
         }
-
-        // Run the check once when the page loads, in case the browser remembers the state
-        document.addEventListener('DOMContentLoaded', toggleAgencyField);
     </script>
 {% endblock %}

@@ -7,14 +7,91 @@
 {% block content %}
     <div class='manage-props'>
         <h1>Manage Properties</h1>
-        {% for message in get_flashed_messages() %}
-            <div class='flash'>{{ message }}</div>
-        {% endfor %}
-        <form method='post'>
-            <h2>WIP</h2>
-            <br><br>
-            <input type='submit' value='Save' style="width: fit-content;">
-        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div id='addPropertyForm' style='display: none;'>
+            <form method="post">
+                to add: neighborhood_id, location, description, sq_footage
+                <br>
+                <input type='text' id='street' name='street' placeholder="Street">
+                <input type='text' id='city' name='city' placeholder="City">
+                <input type='text' id='state' name='state' size='3' placeholder="State">
+                <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
+                <br><br>
+                <input type='number' id='num_rooms' style='width: 8.5ch;' name='num_rooms' min='0' placeholder="Rooms">
+                <input type='number' id='price' style='width: 10.5ch;' name='price_min' min='0' placeholder="Price">
+                <select name='prop_type' id='prop_type'>
+                    <option selected value=''>Property Type</option>
+                    <option value='House'>House</option>
+                    <option value='Apartment'>Apartment</option>
+                    <option value='CommercialBuilding'>Commercial Building</option>
+                    <option value='VacationHome'>Vacation Home</option>
+                    <option value='Land'>Land</option>
+                </select>
+                <br><br>
+                <button type="submit">Add</button>
+            </form>
+            <br>
+        </div>
+        <button id='add' onclick='toggleAddPropertyForm()'>Add A Property</button>
         <br><br>
+        {% if properties %}
+            <table>
+                <thead>
+                    <tr>
+                        {% for header in headers %}
+                            <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for property in properties %}
+                        <tr>
+                            {% for column in property %}
+                                <td>{{ column }}</td>
+                            {% endfor %}
+                            <td class="table-actions">
+                                <button type="button" class="text-button">Edit</button>
+                                
+                                <form method="POST" action="{{ url_for('manage_properties') }}" style="display: inline-block;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="property_id" value="{{ property[0] }}">
+                                    
+                                    <button type="submit" class="text-button delete-button">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No properties found.</p>
+        {% endif %}
     </div>
+    <script>
+        function toggleAddPropertyForm() {
+            const bookButton = document.getElementById('add');
+            const bookingForm = document.getElementById('addPropertyForm');
+            
+            if (bookButton.click && bookingForm.style.display == 'none') {
+                bookingForm.style.display = 'block';
+                bookButton.textContent = 'Cancel';
+                // *.required = true;
+            } else {
+                bookingForm.style.display = 'none';
+                bookButton.textContent = 'Add A Property';
+                //*.required = false;
+                
+                // Optional: Clear the input when hidden
+                // *.value = ''; 
+            }
+        }
+    </script>
 {% endblock %}

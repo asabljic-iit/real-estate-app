@@ -7,14 +7,77 @@
 {% block content %}
     <div class='manage-books'>
         <h1>Manage Bookings</h1>
-        {% for message in get_flashed_messages() %}
-            <div class='flash'>{{ message }}</div>
-        {% endfor %}
-        <form method='post'>
-            <h2>WIP</h2>
-            <br><br>
-            <input type='submit' value='Save' style="width: fit-content;">
-        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% if bookings %}
+            <table>
+                <thead>
+                    <tr>
+                        {% for header in headers %}
+                            <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in bookings %}
+                        <tr>
+                            {% for column in book[2:] %}
+                                <td>{{ column }}</td>
+                            {% endfor %}     
+                            <td class="table-actions">
+                                <dialog id='editBooking'>
+                                    <form method="POST" action="{{ url_for('manage_bookings') }}" >
+                                        <br>
+                                        <input type="hidden" name="action" value="edit">
+                                        <input type="hidden" name="booking_id" value="{{ book[0] }}">
+                                        <input type="hidden" name="property_id" value="{{ book[2] }}">
+                                        <ul>
+                                            <li>Start Date<br><input type="date" name="new_start_date" placeholder="Start Date">
+                                            <li>End Date<br><input type="date" name="new_end_date" placeholder="End Date">
+                                        </ul>
+                                        <br>
+                                        <button type="submit">Confirm</button>
+                                        <button type='button' class="text-button" onclick="document.getElementById('editBooking').close()">Close</button>
+                                    </form>
+                                    <br>
+                                </dialog>
+                                <button type="button" class="text-button" onclick="document.getElementById('editBooking').showModal()">Edit Booking</button>
+                                <dialog id ='cancelBooking'>
+                                    <form method="POST" action="{{ url_for('manage_bookings') }}" >
+                                        <br>
+                                        <p>Are you sure you want to cancel this booking?</p>
+                                        <input type="hidden" name="action" value="cancel">
+                                        <input type="hidden" name="booking_id" value="{{ book[0] }}">
+                                        <input type="hidden" name="property_id" value="{{ book[2] }}">
+                                        <br>
+                                        <button type="submit">Yes, Cancel</button>
+                                        <button type='button' class="text-button" onclick="document.getElementById('cancelBooking').close()">No, Go Back</button>
+                                    </form>
+                                    <br>
+                                </dialog>
+                                <button type="button" class="text-button cancel-button" onclick="document.getElementById('cancelBooking').showModal()">Cancel Booking</button>
+                                <!-- <form method="POST" action="{{ url_for('manage_bookings') }}" style="display: inline-block;">
+                                    <input type="hidden" name="action" value="cancel">
+                                    <input type="hidden" name="booking_id" value="{{ book[0] }}">
+                                    <input type="hidden" name="property_id" value="{{ book[2] }}">
+                                    
+                                    <button type="submit" class="text-button cancel-button">Cancel Booking</button>
+                                </form> -->
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No bookings found.</p>
+        {% endif %}
         <br><br>
     </div>
 {% endblock %}

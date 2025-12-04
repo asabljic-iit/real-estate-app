@@ -3,7 +3,7 @@
     <meta charset='UTF-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} - Home4U</title>
-    <link rel="icon" type="image/png" href="/static/assets/stockLogo.png" style="filter: invert(100%);">
+    <link rel="icon" type="image/png" href="/static/assets/favicon.png" style="filter: invert(100%);">
     <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
     <head>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,7 @@
                     {% if g.user['agency'] %}
                         <li><a href="{{ url_for('manage_properties') }}">Manage Properties</span>
                     {% endif %}
-                    <li><a href="{{ url_for('manage_booking') }}">Manage Bookings</span>
+                    <li><a href="{{ url_for('manage_bookings') }}">Manage Bookings</span>
                     <li><a href="{{ url_for('logout') }}">Log Out</a>
                 {% else %}
                     <li><a href="{{ url_for('register') }}">Register</a>

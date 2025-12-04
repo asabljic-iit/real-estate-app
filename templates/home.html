@@ -36,19 +36,22 @@
         <h1 style='margin-bottom: 0;'>Take a look at some of our properties!</h1>
         <div class="cards">
             {% for property in properties %}
-                <a class="card" href="{{ url_for('book_property', property_id=property[0]) }}" aria-label="View details for {{ property[1] }}, {{ property[2] }}">
+                <a class="card" href="{{ url_for('book_property', property_id=property[0]) }}" aria-label="View details for {{ property[1] }}, {{ property[2] }}, {{ property[2] }}">
                     <div class="topHalf">
-                        <img src="/static/assets/{{property[5]}}.jpg" alt="piccyture" style="width: 100%; height: fit-content;">
+                        <img src="/static/assets/{{property[6]}}.jpg" alt="piccyture" style="width: 100%; height: fit-content;">
                     </div>
-                    <div>
-                        <h3>{{ property[1] }}, {{ property[2] }}</h3>
-                    </div>
-                    <p>{{ property[3] }}</p>
+                    <div class="btmHalf">
+                        <div>
+                            <h3>{{ property[1] }}</h3>
+                            <h4> {{ property[2] }}, {{ property[3] }}</h4>
+                        </div>
+                        <p>{{ property[4] }}</p>
 
-                    <div>
-                        <span>${{property[4]}}</span>
+                        <div>
+                            <span>${{property[5] | currency}}</span>
+                        </div>
+                        <br>
                     </div>
-                    <br>
                 </a>
             {% endfor %}
         </div>

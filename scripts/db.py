@@ -59,10 +59,10 @@ def execute_query(query, params=None, fetch_mode='all'):
             return True 
         
     except psycopg2.OperationalError as e:
-        print(f"DB Operational Error: {e}")
+        print(f"DB Operational Error: {str(e)}")
         raise e
     except Exception as e:
-        print(f"General DB Error: {e}")
+        print(f"General DB Error: {str(e)}")
         raise e
         
     finally:

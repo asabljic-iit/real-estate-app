@@ -8,10 +8,15 @@
     <div class='auth'>
         <h1>Register</h1>
         
-        {# Display Flash Messages with A11y role #}
-        {% for message in get_flashed_messages() %}
-            <div class='flash' role='alert'>{{ message }}</div>
-        {% endfor %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         
         <form method='post' class='register-form'>
             
@@ -88,8 +93,5 @@
                 agencyNameInput.value = ''; 
             }
         }
-
-        // Run the check once when the page loads, ensuring correct initial state
-        document.addEventListener('DOMContentLoaded', toggleAgencyField);
     </script>
 {% endblock %}

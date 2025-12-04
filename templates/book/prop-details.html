@@ -6,15 +6,15 @@
 
 {% block content %}
     <div class='book'>
-        <h1>Property Details for:<div class="propInfoTop"> {{ property.street }}, {{ property.city }}</div></h1>
+        <h1>Property Details for:<div class="propInfoTop"> {{ property.street }}, {{ property.city }}, {{ property.state }}</div></h1>
         <p></p>
         <img src="/static/assets/{{property.prop_type}}.jpg" style="width: 500px;height: 300px;">
         <p>{{ property.description  }}</p>
         <br>
         <h2>Property Information</h2>
         <p>Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}</p>
-        <p>Price: ${{property.price}}</p>
-        <p>Room Amount: {{ property.num_rooms  }}</p>
+        <p>Price: ${{property.price | currency}}</p>
+        <p>Number of Rooms: {{ property.num_rooms  }}</p>
         <p>Sq ft: {{  property.sq_footage  }}</p>
         <p>Type: {{ property.prop_type  }}</p>
 
@@ -23,9 +23,15 @@
         {% if not g.user['agency'] %}
             <h2>Book Now</h2>
             {% if property.availability %}
-                {% for message in get_flashed_messages() %}
-                    <div class='flash'>{{ message }}</div>
-                {% endfor %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-container">
+                            {% for category, message in messages %}
+                                <div class="flash {{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 <div id='bookingForm' style='display: none;'>
                     <form method="post">
                         <label for='start_date'>Start Date:</label>
@@ -72,8 +78,5 @@
                 // *.value = ''; 
             }
         }
-
-        // Run the check once when the page loads, in case the browser remembers the state
-        document.addEventListener('DOMContentLoaded', toggleAgencyField);
     </script>
 {% endblock %}

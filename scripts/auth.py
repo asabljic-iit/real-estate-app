@@ -4,7 +4,7 @@ from flask import session
 # Register Page Functions
 # Both agents and prospective renters can register with an email and personal information.
 def register_user(agency, email, name, pswd):
-    """Register user. W"""
+    """Register user."""
 
     if email is None:
         raise ValueError("Email is required.")
@@ -30,7 +30,7 @@ def register_user(agency, email, name, pswd):
 
 # Login Page Functions
 def login_user(email, pswd):
-    """desc"""
+    """Login user."""
 
     query = "SELECT * FROM users WHERE email_address=%s"
     user = execute_query(query, tuple([email]), fetch_mode='one')
@@ -53,6 +53,8 @@ def get_user(user_id):
 
 
 def get_agency(agent_id):
+    """Get agency name from agent."""
+    
     query = "SELECT agency FROM agent"
     params = [agent_id]
     return execute_query(query, tuple(params), fetch_mode='one')

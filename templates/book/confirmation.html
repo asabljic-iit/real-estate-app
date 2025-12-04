@@ -1,16 +1,33 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    {% block title %}Home{% endblock %}
+    {% block title %}Booking Confirmation{% endblock %}
 {% endblock %}
 
 {% block content %}
     <div>
-        <h1>congats</h1>
+        <h1>Booking Confirmation</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <img src="/static/assets/{{property.prop_type}}.jpg" style="width: 500px;height: 300px;">
         <h2>Property Information</h2>
         Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
         <br><br>
-        you did it
+        <h2>Booking Information</h2>
+        Start Date: {{ booking[0] }}
+        <br>
+        End Date: {{ booking[1] }}
+        <br>
+        Total Cost: {{ property.price | currency }}
+        <br>
+        Payment Method:
         <br><br>
         <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
     </div>

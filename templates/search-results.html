@@ -22,7 +22,11 @@
                 <tbody>
                     {% for property in properties %}
                         <tr>
-                            {% for column in property[1:] %}
+                            {% for column in property[1:7] %}
+                                <td>{{ column }}</td>
+                            {% endfor %}
+                            <td>${{ property[7] | currency }}</td>
+                            {% for column in property[8:] %}
                                 <td>{{ column }}</td>
                             {% endfor %}
                             <td>

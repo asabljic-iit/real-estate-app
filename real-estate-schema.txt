@@ -111,7 +111,7 @@ CREATE TABLE Property (
 CREATE TABLE Booking (
 	booking_id SERIAL PRIMARY KEY,
 	renter_id INT NOT NULL,
-	property_id INT NOT NULL,
+	property_id INT UNIQUE NOT NULL,
 	start_date DATE,
 	end_date DATE,
 	FOREIGN KEY (renter_id) REFERENCES Renter(renter_id)

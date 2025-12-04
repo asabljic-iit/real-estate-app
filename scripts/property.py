@@ -2,13 +2,13 @@ from scripts.db import execute_query
 
 # Manage Property Page Functions
 # TODO- add, manage, delete properties
-def get_properties(agent_id): #get properties under agent
-    query = "SELECT property_id, street, city, state, zip_code FROM property p JOIN agent a ON a.agency = p.agency WHERE agent_id = %s"
-    params = [agent_id]
+def get_agency_properties(agency): #get properties under agent
+    query = "SELECT property_id, street, city, state, zip_code FROM property WHERE agency = %s"
+    params = [agency]
     return execute_query(query, tuple(params), fetch_mode='all')
 
-def add_property(agency, neighborhood_id, location, num_rooms, description, 
-                 sq_footage, price, street, city, state, zip_code):
+def agency_add_property(agency, neighborhood_id, location, num_rooms,
+                       description, sq_footage, price, street, city, state, zip_code):
     query = 'INSERT INTO property (agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code) ' \
     'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
     params = [agency, neighborhood_id, location, num_rooms, description, 
@@ -17,7 +17,7 @@ def add_property(agency, neighborhood_id, location, num_rooms, description,
     
     return True
 
-def edit_property(property_id, agency, neighborhood_id, location, num_rooms, 
+def agency_edit_property(property_id, agency, neighborhood_id, location, num_rooms, 
                   description, sq_footage, price, street, city, state, zip_code):
     
     update_attributes = {
@@ -47,13 +47,13 @@ def edit_property(property_id, agency, neighborhood_id, location, num_rooms,
 
     set_clause = ", ".join(updates)
     
-    query = f"UPDATE property SET {set_clause} WHERE property_id=%s"
-    params.append(property_id)
+    query = f"UPDATE property SET {set_clause} WHERE agency=%s AND property_id=%s"
+    params.append(agency, property_id)
     return execute_query(query, tuple(params), fetch_mode='commit')
 
-def delete_property(property_id):
-    query = 'DELETE FROM property WHERE property_id=%s'
-    params = [property_id]
+def agency_delete_property(agency, property_id):
+    query = 'DELETE FROM property WHERE agency=%s AND property_id=%s'
+    params = [agency, property_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
 def update_availability(property_id, availability):
@@ -66,7 +66,7 @@ def search_properties(street, city, state, zip_code,
                       num_rooms, price_min, price_max, prop_type, desired_date):
     
     # --- Build the Dynamic SQL Query ---
-    query = "SELECT property_id, street, city, state, zip_code FROM property WHERE 1=1"
+    query = "SELECT property_id, street, city, state, zip_code, description, num_rooms, price, prop_type, availability FROM property WHERE 1=1"
     params = []
     
     if street:
@@ -94,12 +94,17 @@ def search_properties(street, city, state, zip_code,
         price_max and not price_min): 
         query += " AND price <= %s"
         params.append(price_max)
-    # TODO- implement desired date
+    if (desired_date):
+        query += """ AND property_id NOT IN (
+                        SELECT property_id FROM Booking 
+                        WHERE %s BETWEEN start_date AND end_date
+                    )"""
+        params.append(desired_date)
     
     return execute_query(query, tuple(params), fetch_mode='all')
 
 def get_random_properties():
-    query = "Select property_id, street, state, description, price, prop_type FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
+    query = "Select property_id, street, city, state, description, price, prop_type FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
     params = []
     return execute_query(query, tuple(params), fetch_mode='all')
 
