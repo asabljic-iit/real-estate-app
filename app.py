@@ -9,15 +9,27 @@ from scripts.book import *
 from scripts.property import *
 
 app = Flask(__name__)
-app.config.from_mapping(SECRET_KEY='dev')
+app.config.from_mapping(SECRET_KEY='dev') # change when deploying
 
 # Login Functions
 def login_required(view): 
-    #TODO- maybe have two functions, one for renter one for agent or add another param
     """View decorator that redirects anonymous users to the login page."""
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None: #TODO
+        if g.user is None:
+            flash("You are not logged in.")
+            return redirect(url_for('login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+def agent_required(view): 
+    """View decorator that redirects non-agent users to the login page."""
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None or g.user['agency'] is None:
+            flash("Only agents can access this page.")
             return redirect(url_for('login'))
 
         return view(**kwargs)
@@ -106,17 +118,17 @@ def login():
 @login_required
 def account():
     if request.method == 'POST':
-        flash('whoopsie')
+        flash('TBD')
 
     return render_template('manage/account.html')
 
 # Agent- Manage Properties Page
 # TODO- add, manage, delete properties
 @app.route('/manage-properties', methods=['GET', 'POST'])
-@login_required
+@agent_required
 def manage_properties():
     if request.method == 'POST':
-        flash('whoopsie')
+        flash('TBD')
 
     return render_template('manage/manage-props.html')
 
@@ -164,14 +176,20 @@ def search():
 def book_property(property_id):
     property_details = get_property_details(property_id)
     if request.method == 'POST':
-        # flash('whoopsie')
-        # success = save_booking(property_id, user_name, ...)
-        return render_template('book/confirmation.html', property=property_details)
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
+        try:
+            save_booking(property_id, g.user['user_id'], start_date, end_date)
+            return render_template('book/confirmation.html', property=property_details)
+        except ValueError as error:
+             flash(error)
+        except Exception as error:
+            flash(f"An unexpected error occurred: {error}")
+
+    if property_details:
+        return render_template('book/prop-details.html', property=property_details)
     else:
-        if property_details:
-            return render_template('book/prop-details.html', property=property_details)
-        else:
-            abort(404)
+        abort(404)
 
 # Manage Bookings Page
 # TODO- Renters can view and cancel their bookings. Refunds go to the saved
@@ -182,7 +200,7 @@ def book_property(property_id):
 @login_required
 def manage_booking():
     if request.method == 'POST':
-        flash('whoopsie')
+        flash('TBD')
 
     return render_template('manage/manage-books.html')
 

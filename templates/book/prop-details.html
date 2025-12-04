@@ -22,15 +22,17 @@
         
         {% if not g.user['agency'] %}
             <h2>Book Now</h2>
-            {% for message in get_flashed_messages() %}
-                <div class='flash'>{{ message }}</div>
-            {% endfor %}
-            <!-- add check for if property.availiability = true to show booking button -->
+            {% if property.availability %}
+                {% for message in get_flashed_messages() %}
+                    <div class='flash'>{{ message }}</div>
+                {% endfor %}
                 <div id='bookingForm' style='display: none;'>
                     <form method="post">
-                        <input type="date" id="desired_date" name="desired_date" placeholder="Rental Period">
-
-                        <br>
+                        <label for='start_date'>Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                        <label for='start_date'>Start Date:</label>
+                        <input type="date" id="start_date" name="end_date" required>
+                        <br><br>
                         select or add payment details
                         <br><br>
                         <button type="submit">Confirm Booking</button>
@@ -42,8 +44,13 @@
                 {% else %}
                     <a href="{{ url_for('login') }}"><button>Book</button></a>
                 {% endif %}
-        <br><br>
-        <!-- add agent edit property ability? -->
+                <br><br>
+            {% else %}
+                <button disabled>Unavailable</button>
+            {% endif %}
+        {% else %}
+            <p>You are an agent, you cant book! Tho maybe ill let you edit TBD</p>
+            <!-- add agent edit property ability? -->
         {% endif %}
         <div class="backButton"><p><button onclick="history.back()">↩</button></div></p>
     </div>

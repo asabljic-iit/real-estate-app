@@ -7,17 +7,48 @@ def get_properties(agent_id): #get properties under agent
     params = [agent_id]
     return execute_query(query, tuple(params), fetch_mode='all')
 
-def add_property(agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code):
+def add_property(agency, neighborhood_id, location, num_rooms, description, 
+                 sq_footage, price, street, city, state, zip_code):
     query = 'INSERT INTO property (agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code) ' \
     'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-    params = [agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code]    
+    params = [agency, neighborhood_id, location, num_rooms, description, 
+              sq_footage, price, street, city, state, zip_code]    
     execute_query(query, tuple(params), fetch_mode='commit')
     
     return True
 
-def edit_property(property_id, agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code):
-    query = 'UPDATE property SET agency=%s, neighborhood_id=%s, location=%s, num_rooms=%s, description=%s, sq_footage=%s, price=%s, street=%s, city=%s, state=%s, zip_code=%s WHERE property_id=%s'
-    params = [agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code, property_id]
+def edit_property(property_id, agency, neighborhood_id, location, num_rooms, 
+                  description, sq_footage, price, street, city, state, zip_code):
+    
+    update_attributes = {
+        'agency': agency,
+        'neighborhood_id': neighborhood_id,
+        'location': location,
+        'num_rooms': num_rooms,
+        'description': description,
+        'sq_footage': sq_footage,
+        'price': price,
+        'street': street,
+        'city': city,
+        'state': state,
+        'zip_code': zip_code,
+    }
+
+    updates = []
+    params = []
+
+    for column, value in update_attributes.items():
+        if value:
+            updates.append(f"{column}=%s")
+            params.append(value)
+
+    if not updates:
+        raise ValueError(f"Warning: No fields provided to update property_id={property_id}.")
+
+    set_clause = ", ".join(updates)
+    
+    query = f"UPDATE property SET {set_clause} WHERE property_id=%s"
+    params.append(property_id)
     return execute_query(query, tuple(params), fetch_mode='commit')
 
 def delete_property(property_id):
@@ -25,7 +56,7 @@ def delete_property(property_id):
     params = [property_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
-def property_availability(property_id, availability):
+def update_availability(property_id, availability):
     query = 'UPDATE property SET availability=%s WHERE property_id=%s'
     params = [availability, property_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
@@ -62,7 +93,8 @@ def search_properties(street, city, state, zip_code,
     if (price_min and price_max and price_min <= price_max) or (
         price_max and not price_min): 
         query += " AND price <= %s"
-        params.append(price_max)            
+        params.append(price_max)
+    # TODO- implement desired date
     
     return execute_query(query, tuple(params), fetch_mode='all')
 

@@ -44,6 +44,13 @@ input, button, select {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+button:disabled, input:disabled {
+  background-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.38);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 /* Material Design Focus State */
 input:focus, button:focus, select:focus {
   outline: none; 
@@ -63,7 +70,7 @@ button {
     box-shadow: var(--md-shadow-2dp); 
 }
 
-button:hover {
+input[type="submit"]:hover, input[type="button"]:hover, button:hover {
     box-shadow: var(--md-shadow-4dp); 
 }
 
@@ -99,6 +106,7 @@ div table {
 
 /* Layout/Structure */
 nav {
+  text-decoration: none;
   background: var(--md-color-primary);
   color: var(--md-color-on-primary);
   display: flex;
@@ -126,6 +134,7 @@ header .action {
   display: block;
   padding: 0.75rem; 
   color: var(--md-color-on-primary);
+  text-decoration: none;
 }
 
 .auth {
@@ -134,6 +143,18 @@ header .action {
 }
 
 .auth form {
+  display: block; 
+  max-width: 300px; 
+  margin: 0 auto;
+  text-align: left; 
+}
+
+.account {
+  max-width: 500px; 
+  margin: 2rem auto; 
+}
+
+.account form {
   display: block; 
   max-width: 300px; 
   margin: 0 auto;
@@ -166,10 +187,10 @@ input[type='button'] {
 .flash {
   margin: 1rem auto;
   padding: 1em;
-  background: #E0E0E0;
-  color: #424242;
+  background: #cce3f1;
+  color: #003d61;
   border: none; 
-  border-left: 5px solid #757575;
+  border-left: 5px solid #3f96cc;
   border-radius: 4px;
   max-width: 80%;
 }
@@ -232,7 +253,7 @@ input[type='button'] {
 }
 
 .backButton {
-  position: absolute;
+  position: fixed;
   padding: 0;
   top: 74px; 
   left: 48px;
@@ -321,7 +342,7 @@ input[type='button'] {
     background: none; 
     color: var(--md-color-primary); 
     box-shadow: none; 
-    padding: 0.5em 0;
+    padding: 0.5em 0.5em;
     border: none;
     text-decoration: none;
     text-transform: uppercase;

@@ -1,4 +1,5 @@
 from scripts.db import execute_query
+from scripts.property import *
 
 # Booking Page Functions
 def save_booking(property_id, user_id, start_date, end_date):
@@ -7,6 +8,7 @@ def save_booking(property_id, user_id, start_date, end_date):
     
     # Use the core function to execute and commit
     execute_query(query, tuple(params), fetch_mode='commit')
+    update_availability(property_id,False)
 
     return True
 

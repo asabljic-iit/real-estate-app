@@ -2,7 +2,8 @@
 <html lang='en'>
     <meta charset='UTF-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %} - Real Estate Website</title>
+    <title>{% block title %}{% endblock %} - Home4U</title>
+    <link rel="icon" type="image/png" href="/static/assets/stockLogo.png" style="filter: invert(100%);">
     <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
     <head>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +13,7 @@
     <body>
         <nav>
             <h1><a href="{{ url_for('home') }}">
-                <img src="/static/assets/stockLogo.png" alt="Stock image logo test" style="width: 50px; height: 50px; padding-right: 3px; filter: contrast(100) invert();">OME4U</a></h1>
+                <img src="/static/assets/stockLogo.png" alt="Stock image logo test" style="width: 50px; height: 50px; padding-right: 3px;">OME4U</a></h1>
             <ul>
                 <!-- TODO: add username when user is logged in, change to 'username' -->
                 {% if g.user %}
