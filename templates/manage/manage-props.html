@@ -16,31 +16,49 @@
                 </div>
             {% endif %}
         {% endwith %}
-        <div id='addPropertyForm' style='display: none;'>
-            <form method="post">
-                to add: neighborhood_id, location, description, sq_footage
+        <dialog id='addPropertyForm'>
+            <form method="POST" action="{{ url_for('manage_properties') }}">
+                <!-- TODO: adjust neighborhood logic-->
                 <br>
+                <input type="hidden" name="action" value="add">
                 <input type='text' id='street' name='street' placeholder="Street">
                 <input type='text' id='city' name='city' placeholder="City">
                 <input type='text' id='state' name='state' size='3' placeholder="State">
                 <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
                 <br><br>
                 <input type='number' id='num_rooms' style='width: 8.5ch;' name='num_rooms' min='0' placeholder="Rooms">
-                <input type='number' id='price' style='width: 10.5ch;' name='price_min' min='0' placeholder="Price">
+                <input type='number' id='price' style='width: 10.5ch;' name='price' min='0' placeholder="Price">
+                <input type='number' id='sq_footage' style='width: 13ch;' name='sq_footage' min='0' placeholder="Sq. Footage">
+                <br><br>
+                <label for="prop_type" style="font-size: 12px;">Choose property type:</label>
                 <select name='prop_type' id='prop_type'>
-                    <option selected value=''>Property Type</option>
                     <option value='House'>House</option>
                     <option value='Apartment'>Apartment</option>
                     <option value='CommercialBuilding'>Commercial Building</option>
                     <option value='VacationHome'>Vacation Home</option>
                     <option value='Land'>Land</option>
                 </select>
+                <label for="neighborhood_id" style="font-size: 12px;">Choose neighborhood:</label>
+                 <select name='neighborhood_id' id='neighborhood_id'>
+                    <option value='1'>Northside</option>
+                    <option value='2'>Midtown</option>
+                    <option value='3'>The Heights</option>
+                    <option value='4'>Lake View</option>
+                    <option value='5'>Industrial Zone</option>
+                    <option value='6'>Downtown Core</option>
+                    <option value='7'>Mountain Ridge</option>
+                    <option value='8'>Coastal Bluffs</option>
+                    <option value='9'>Suburban Park</option>
+                </select>
+                <br><br>
+                <textarea id='descr' name='description' rows="15" cols="70" placeholder="Enter Description"></textarea>
                 <br><br>
                 <button type="submit">Add</button>
+                <button type='button' class="text-button" onclick="document.getElementById('addPropertyForm').close()">Close</button>
             </form>
             <br>
-        </div>
-        <button id='add' onclick='toggleAddPropertyForm()'>Add A Property</button>
+        </dialog>
+        <button type="button" class="button" onclick="document.getElementById('addPropertyForm').showModal()">Add a Property</button>
         <br><br>
         {% if properties %}
             <table>
@@ -58,12 +76,13 @@
                                 <td>{{ column }}</td>
                             {% endfor %}
                             <td class="table-actions">
-                                <button type="button" class="text-button">Edit</button>
+                                <!-- TODO: Implement edit dialog -->
+                                <button type='button' class="text-button" onclick="document.getElementById('editPropertyForm').close()">Close</button>
                                 
+                                <!-- TODO: Change form to dialog (are you sure you want to delete? yes no) -->
                                 <form method="POST" action="{{ url_for('manage_properties') }}" style="display: inline-block;">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="property_id" value="{{ property[0] }}">
-                                    
                                     <button type="submit" class="text-button delete-button">Delete</button>
                                 </form>
                             </td>
@@ -75,23 +94,4 @@
             <p>No properties found.</p>
         {% endif %}
     </div>
-    <script>
-        function toggleAddPropertyForm() {
-            const bookButton = document.getElementById('add');
-            const bookingForm = document.getElementById('addPropertyForm');
-            
-            if (bookButton.click && bookingForm.style.display == 'none') {
-                bookingForm.style.display = 'block';
-                bookButton.textContent = 'Cancel';
-                // *.required = true;
-            } else {
-                bookingForm.style.display = 'none';
-                bookButton.textContent = 'Add A Property';
-                //*.required = false;
-                
-                // Optional: Clear the input when hidden
-                // *.value = ''; 
-            }
-        }
-    </script>
 {% endblock %}

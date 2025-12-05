@@ -9,7 +9,37 @@
         <h1>Search Results</h1>
         
         <p>Searching for: {{ search_params.street }} {{ search_params.city }} {{ search_params.state }} {{ search_params.zip_code }}</p>
-
+        <form id='searchForm' action='/search' method='GET'>
+            <input type='text' id='street' name='street' placeholder="Street" value="{{ search_params.street }}">
+            <input type='text' id='city' name='city' placeholder="City" value="{{ search_params.city }}">
+            <input type='text' id='state' name='state' size='3' placeholder="State" value="{{ search_params.state }}">
+            <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code" value="{{ search_params.zip_code }}">
+            <br><br>
+            <select name='prop_type' id='prop_type'>
+                <option selected value='{{ search_params.prop_type }}'>{{ search_params.prop_type }}</option>
+                <option value='House'>House</option>
+                <option value='Apartment'>Apartment</option>
+                <option value='CommercialBuilding'>Commercial Building</option>
+                <option value='VacationHome'>Vacation Home</option>
+                <option value='Land'>Land</option>
+            </select>
+            <input type='number' id='num_rooms' style='width: 8.5ch;' name='num_rooms' min='0' placeholder="Rooms" value="{{ search_params.rooms }}">
+            <input type='number' id='price_min' style='width: 10.5ch; margin-right: 0;' name='price_min' min='0' placeholder="Min Price" value="{{ search_params.price_min }}">
+            -
+            <input type='number' id='price_max' style='width: 10.5ch; margin-left: 0;' name='price_max' min='0' placeholder="Max Price" value="{{ search_params.price_max }}">
+            <input type='date' id='desired_date' name='desired_date' value="{{ search_params.desired_date }}">
+            <select id="sortDropdown" name="sort_by">
+                <option selected value="{{ search_params.sort_by }}">Sort by</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="num_rooms_asc">Rooms: Ascending</option>
+                <option value="num_rooms_desc">Rooms: Descending</option>
+            </select>
+            <br><br>
+            <button type='submit'>Search Properties</button>
+        </form>
+        <!-- <button onclick="document.getElementById('searchForm').reset()" class="text-button">Clear</button> -->
+        <br><br>
         {% if properties %}
             <table>
                 <thead>
@@ -22,11 +52,11 @@
                 <tbody>
                     {% for property in properties %}
                         <tr>
-                            {% for column in property[1:7] %}
+                            {% for column in property[1:8] %}
                                 <td>{{ column }}</td>
                             {% endfor %}
-                            <td>${{ property[7] | currency }}</td>
-                            {% for column in property[8:] %}
+                            <td>${{ property[8] | currency }}</td>
+                            {% for column in property[9:] %}
                                 <td>{{ column }}</td>
                             {% endfor %}
                             <td>
@@ -44,4 +74,10 @@
         
         <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
     </div>
+    <script>
+        function applyFilter() {
+            const filter = document.getElementById('sortDropdown').value;
+            
+        }
+    </script>
 {% endblock %}

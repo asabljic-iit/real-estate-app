@@ -7,25 +7,27 @@ def get_agency_properties(agency): #get properties under agent
     params = [agency]
     return execute_query(query, tuple(params), fetch_mode='all')
 
-def agency_add_property(agency, neighborhood_id, location, num_rooms,
-                       description, sq_footage, price, street, city, state, zip_code):
-    query = 'INSERT INTO property (agency, neighborhood_id, location, num_rooms, description, sq_footage, price, street, city, state, zip_code) ' \
-    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-    params = [agency, neighborhood_id, location, num_rooms, description, 
-              sq_footage, price, street, city, state, zip_code]    
+def agency_add_property(agency, neighborhood_id, num_rooms, description, 
+                        sq_footage, price, street, city, state, zip_code, prop_type):
+    query = 'INSERT INTO property (agency, neighborhood_id, num_rooms, description, sq_footage, price, street, city, state, zip_code, prop_type) ' \
+    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    params = [agency, neighborhood_id, num_rooms, description, 
+              sq_footage, price, street, city, state, zip_code, prop_type] 
+    
+    #TODO- implement adding to proptype table
+    
     execute_query(query, tuple(params), fetch_mode='commit')
     
     return True
 
-def agency_edit_property(property_id, agency, neighborhood_id, location, num_rooms, 
+def agency_edit_property(property_id, agency, neighborhood_id, num_rooms, 
                   description, sq_footage, price, street, city, state, zip_code):
     
     update_attributes = {
         'agency': agency,
         'neighborhood_id': neighborhood_id,
-        'location': location,
         'num_rooms': num_rooms,
-        'description': description,
+        'description': description, 
         'sq_footage': sq_footage,
         'price': price,
         'street': street,
@@ -63,10 +65,10 @@ def update_availability(property_id, availability):
 
 # Search Page Functions
 def search_properties(street, city, state, zip_code, 
-                      num_rooms, price_min, price_max, prop_type, desired_date):
+                      num_rooms, price_min, price_max, prop_type, desired_date, sort_by=None):
     
     # --- Build the Dynamic SQL Query ---
-    query = "SELECT property_id, street, city, state, zip_code, description, num_rooms, price, prop_type, availability FROM property WHERE 1=1"
+    query = "SELECT property_id, street, city, state, zip_code, description, prop_type, num_rooms, price, availability FROM property WHERE 1=1"
     params = []
     
     if street:
@@ -100,18 +102,46 @@ def search_properties(street, city, state, zip_code,
                         WHERE %s BETWEEN start_date AND end_date
                     )"""
         params.append(desired_date)
-    
+        
+    if sort_by == 'price_asc': # these are fine
+        query += " ORDER BY price ASC"
+        # params.append(sort_by)
+    elif sort_by == 'price_desc':
+        query += " ORDER BY price DESC"
+        # params.append(sort_by)
+    elif sort_by == 'num_rooms_asc':
+        query += " ORDER BY num_rooms ASC"
+        # params.append(sort_by)
+    elif sort_by == 'num_rooms_desc':
+        query += " ORDER BY num_rooms DESC"
+        # params.append(sort_by)
     return execute_query(query, tuple(params), fetch_mode='all')
 
+# def sort_properties(sort_by):
+#     query = "SELECT property_id, street, city, state, zip_code, description, num_rooms, price, prop_type, availability FROM Property WHERE availability IS TRUE"
+    
+#     if sort_by == 'price_asc':
+#         query += " ORDER BY price ASC"
+#     elif sort_by == 'price_desc':
+#         query += " ORDER BY price DESC"
+#     elif sort_by == 'num_rooms_asc':
+#         query += " ORDER BY num_rooms ASC"
+#     elif sort_by == 'num_rooms_desc':
+#         query += " ORDER BY num_rooms DESC"
+    
+#     params = []
+#     return execute_query(query, tuple(params), fetch_mode='all')
+
 def get_random_properties():
-    query = "Select property_id, street, city, state, description, price, prop_type FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
+    query = "Select property_id, street, city, state, description, prop_type, price FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
     params = []
     return execute_query(query, tuple(params), fetch_mode='all')
 
 # Booking Page Functions
 def get_property_details(property_id):
 
-    query = "SELECT * FROM property WHERE property_id = %s"
+    query = "SELECT * FROM Property P JOIN Neighborhood N ON N.neighborhood_id = P.neighborhood_id WHERE P.property_id = %s"
+    params = [property_id]
     
     # Use the core function to execute and fetch one result
-    return execute_query(query, tuple([property_id]), fetch_mode='one')
+    return execute_query(query, tuple(params), fetch_mode='one')

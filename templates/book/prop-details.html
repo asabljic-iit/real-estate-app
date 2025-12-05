@@ -13,11 +13,11 @@
         <br>
         <h2>Property Information</h2>
         <p>Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}</p>
+        <p>Type: {{ property.prop_type  }}</p>
         <p>Price: ${{property.price | currency}}</p>
         <p>Number of Rooms: {{ property.num_rooms  }}</p>
         <p>Sq ft: {{  property.sq_footage  }}</p>
-        <p>Type: {{ property.prop_type  }}</p>
-
+        
         <br>
         
         {% if not g.user['agency'] %}
@@ -36,10 +36,34 @@
                     <form method="post">
                         <label for='start_date'>Start Date:</label>
                         <input type="date" id="start_date" name="start_date" required>
-                        <label for='start_date'>Start Date:</label>
+                        <label for='start_date'>End Date:</label>
                         <input type="date" id="start_date" name="end_date" required>
                         <br><br>
-                        select or add payment details
+                        {% if credit_cards %}
+                            <label for='payment'>Select Payment:</label>
+                            <select name='payment' id='payment'>
+                                {% for credit_card in credit_cards %}
+                                    <option value='{{ credit_card[0] }}'>Credit Card ({{ credit_card[2] | credit_card }})</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                        <h3>Card Details</h3>
+                            <label for='cardnum'>Card Number:</label>
+                            <input type='number' name='cardnum' id='cardnum' required>
+                            <br><br>
+                            <label for='expdate'>Expiration Date:</label>
+                            <input type='month' name='expdate' id='expdate' required>
+                            <h3>Billing Address</h3>
+                            <label for='street'>Street:</label>
+                            <input name='street' id='street' required>
+                            <label for='city'>City:</label>
+                            <input name='city' id='city' required>
+                            <br><br>
+                            <label for='state'>State:</label>
+                            <input name='state' id='state' size='5' required>
+                            <label for='zipcode'>Zip Code:</label>
+                            <input name='zipcode' id='zipcode' size='10' required>
+                        {% endif %}
                         <br><br>
                         <button type="submit">Confirm Booking</button>
                     </form>

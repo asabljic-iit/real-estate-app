@@ -135,7 +135,8 @@ nav h1 {
 }
 
 nav h1 a {
-    color: var(--md-color-on-primary); 
+    color: var(--md-color-on-primary);
+    text-decoration: none;
 }
 
 /* Modules/Components */
@@ -169,7 +170,7 @@ header .action {
   display: block; 
   max-width: 300px; 
   margin: 0 auto;
-  text-align: left; 
+  text-align: center; 
 }
 
 input[type='submit'] {
@@ -516,3 +517,5 @@ footer {
         margin-top: 0;
     }
 }
+
+

@@ -30,7 +30,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Renter (
-	renter_id SERIAL PRIMARY KEY,
+	renter_id INT PRIMARY KEY,
 	desired_move_in_date DATE,								
 	preferred_location TEXT,
 	budget DECIMAL(10),
@@ -50,7 +50,7 @@ CREATE TABLE UserAddress (
 );
 
 CREATE TABLE Agent (
-	agent_id SERIAL PRIMARY KEY,
+	agent_id INT PRIMARY KEY,
 	agency TEXT NOT NULL,
 	job_title TEXT,
 	phone_number TEXT,
@@ -59,13 +59,14 @@ CREATE TABLE Agent (
 );
 
 CREATE TABLE CreditCard (
-	credit_card_no TEXT PRIMARY KEY,
-	user_id INT NOT NULL,
+	credit_card_id SERIAL PRIMARY KEY,
+	renter_id INT NOT NULL,
+	credit_card_no TEXT,
 	card_address_id INT,
 	expiration_date DATE,
 	FOREIGN KEY(card_address_id) REFERENCES UserAddress(address_id)
 		ON DELETE SET NULL,
-	FOREIGN KEY(user_id) REFERENCES Renter(renter_id)
+	FOREIGN KEY(renter_id) REFERENCES Renter(renter_id)
 		ON DELETE CASCADE
 );
 
@@ -82,6 +83,7 @@ CREATE TABLE Rewards (
 -- Properties tables
 CREATE TABLE Neighborhood (
 	neighborhood_id SERIAL PRIMARY KEY,
+	neighborhood_name TEXT NOT NULL,
 	nearby_school_count INT,
 	crime_rate DECIMAL(3, 2)
 );
@@ -92,7 +94,7 @@ CREATE TABLE Property (
 	property_id SERIAL PRIMARY KEY,
 	agency TEXT NOT NULL,
 	neighborhood_id INT,
-	location TEXT,
+	prop_type pt NOT NULL,
 	num_rooms INT,
 	description TEXT,
 	availability BOOLEAN DEFAULT TRUE,
@@ -102,7 +104,6 @@ CREATE TABLE Property (
 	city TEXT,
 	state TEXT,
 	zip_code TEXT,
-	prop_type pt NOT NULL,
 	FOREIGN KEY (neighborhood_id) REFERENCES Neighborhood(neighborhood_id)
 		ON DELETE SET NULL
 );

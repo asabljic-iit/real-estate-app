@@ -14,6 +14,7 @@ from scripts.property import *
 app = Flask(__name__)
 app.config.from_mapping(SECRET_KEY='dev') # change when deploying
 
+# Miscellanous Functions
 def format_currency(value):
     """Formats a number with comma separators (e.g., 350000 -> 350,000)"""
     if value is None:
@@ -24,6 +25,17 @@ def format_currency(value):
         return value
 
 app.jinja_env.filters['currency'] = format_currency
+
+def format_credit_card(value):
+    """Formats a number with comma separators (e.g., 350000 -> 350,000)"""
+    if value is None:
+        return ""
+    try:
+        return f"{value[-4:]}"
+    except (ValueError, TypeError):
+        return value
+
+app.jinja_env.filters['credit_card'] = format_credit_card
 
 # Login Functions
 def login_required(view): 
@@ -148,6 +160,16 @@ def manage_properties():
     if request.method == 'POST':
         action = request.form.get('action')
         property_id = request.form.get('property_id')
+        neighborhood_id = request.form.get('neighborhood_id')
+        num_rooms = request.form.get('num_rooms')
+        description = request.form.get('description')
+        sq_footage = request.form.get('sq_footage')
+        price = request.form.get('price')
+        street = request.form.get('street')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        zip_code = request.form.get('zip_code')
+        prop_type = request.form.get('prop_type')
         
         if action == 'delete' and property_id:
             try:
@@ -157,7 +179,17 @@ def manage_properties():
                 flash(f'Error deleting property: {str(e)}', 'error')
             
             return redirect(url_for('manage_properties'))
-
+        
+        if action == 'edit' and property_id:
+            flash('TBD')
+        
+        if action == 'add':
+            try: 
+                agency_add_property(g.user['agency'], neighborhood_id, num_rooms, description,
+                                    sq_footage, price, street, city, state, zip_code, prop_type)
+                flash('Property has been successfully added.', 'success')
+            except Exception as e:
+                flash(f'Error adding property: {str(e)}', 'error')
         else:
             # Handle other POST requests or missing data
             flash('Invalid action or missing booking or property ID.', 'error')
@@ -171,7 +203,8 @@ def manage_properties():
                            properties=results)
 
 # Search Results Page
-# Search by location, TODO?- rental/sale type (dropdown),
+# DONE- Search by location, 
+# TODO?- rental/sale type (dropdown),
 # DONE- number of bedrooms (num), price range (num min, range max), property type,
 #  and desired date.
 # DONE- Only available properties meeting all criteria are shown.
@@ -189,12 +222,16 @@ def search():
     price_max = request.args.get('price_max', '')
     prop_type = request.args.get('prop_type', '')
     desired_date = request.args.get('desired_date', '')
-    
+    sort_by = request.args.get('sort_by', '')
+
     # Call a new database function to filter the properties
     headers, results = search_properties(street, city, state, zip_code,
                                          num_rooms, price_min, price_max,
-                                         prop_type, desired_date)
-
+                                         prop_type, desired_date, sort_by)
+    # if sort_by: # not needed
+    #     headers, results = search_properties(street, city, state, zip_code,
+    #                                      num_rooms, price_min, price_max,
+    #                                      prop_type, desired_date, sort_by)
     display_headers = headers[1:]
     
     return render_template('search-results.html', 
@@ -209,6 +246,8 @@ def search():
 @app.route('/property-details/<property_id>', methods=['GET', 'POST'])
 def book_property(property_id):
     property_details = get_property_details(property_id)
+    headers, results = get_credit_cards(g.user['user_id'])
+
     if request.method == 'POST':
         start_date = request.form['start_date']
         end_date = request.form['end_date']
@@ -238,7 +277,10 @@ def book_property(property_id):
                 flash(f"An unexpected error occurred: {str(error)}", 'error')
 
     if property_details:
-        return render_template('book/prop-details.html', property=property_details)
+        return render_template('book/prop-details.html', 
+                               property=property_details,
+                               headers=headers,
+                               credit_cards=results)
     else:
         abort(404)
 

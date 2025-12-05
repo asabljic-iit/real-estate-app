@@ -13,10 +13,6 @@
             <input type='text' id='state' name='state' size='3' placeholder="State">
             <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
             <br><br>
-            <input type='number' id='num_rooms' style='width: 8.5ch;' name='num_rooms' min='0' placeholder="Rooms">
-            <input type='number' id='price_min' style='width: 10.5ch; margin-right: 0;' name='price_min' min='0' placeholder="Min Price">
-            -
-            <input type='number' id='price_max' style='width: 10.5ch; margin-left: 0;' name='price_max' min='0' placeholder="Max Price">
             <select name='prop_type' id='prop_type'>
                 <option selected value=''>Property Type</option>
                 <option value='House'>House</option>
@@ -25,6 +21,10 @@
                 <option value='VacationHome'>Vacation Home</option>
                 <option value='Land'>Land</option>
             </select>
+            <input type='number' id='num_rooms' style='width: 8.5ch;' name='num_rooms' min='0' placeholder="Rooms">
+            <input type='number' id='price_min' style='width: 10.5ch; margin-right: 0;' name='price_min' min='0' placeholder="Min Price">
+            -
+            <input type='number' id='price_max' style='width: 10.5ch; margin-left: 0;' name='price_max' min='0' placeholder="Max Price">
             <input type='date' id='desired_date' name='desired_date'>
             <br><br>
             <button type='submit'>Search Properties</button>
@@ -36,9 +36,9 @@
         <h1 style='margin-bottom: 0;'>Take a look at some of our properties!</h1>
         <div class="cards">
             {% for property in properties %}
-                <a class="card" href="{{ url_for('book_property', property_id=property[0]) }}" aria-label="View details for {{ property[1] }}, {{ property[2] }}, {{ property[2] }}">
+                <a class="card" href="{{ url_for('book_property', property_id=property[0]) }}" aria-label="View details for {{ property[1] }}, {{ property[2] }}, {{ property[3] }}">
                     <div class="topHalf">
-                        <img src="/static/assets/{{property[6]}}.jpg" alt="piccyture" style="width: 100%; height: fit-content;">
+                        <img src="/static/assets/{{property[5]}}.jpg" alt="piccyture" style="width: 100%; height: fit-content;">
                     </div>
                     <div class="btmHalf">
                         <div>
@@ -48,7 +48,7 @@
                         <p>{{ property[4] }}</p>
 
                         <div>
-                            <span>${{property[5] | currency}}</span>
+                            <span>${{property[6] | currency}}</span>
                         </div>
                         <br>
                     </div>

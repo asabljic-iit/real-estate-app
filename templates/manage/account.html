@@ -30,32 +30,39 @@
             {% else %}
                 <h2>Preferences</h2>
                 <label for='movein'>Move-In Date:</label>
+                <br>
                 <input type='date' name='movein' id='movein'>
                 <br><br>
                 <label for='preferloc'>Preferred Location:</label>
                 <input name='preferloc' id='preferloc'>
                 <br><br>
                 <label for='budget'>Budget:</label>
+                <br>
                 <input type='number' name='budget' id='budget'>
                 <h2>Payment Method</h2>
                 <input type='button' id='paymeth' onclick='togglePayMethForm()' value='Add Payment Method'>
                 <div id='paymethForm' style='display: none;'>
                     <h3>Card Details</h3>
                     <label for='cardnum'>Card Number:</label>
-                    <input type='number' name='cardnum' id='cardnum'>
+                    <input type='number' name='cardnum' id='cardnum' required>
                     <br><br>
                     <label for='expdate'>Expiration Date:</label>
-                    <input type='month' name='expdate' id='expdate'>
+                    <input type='month' name='expdate' id='expdate' required>
                     <h3>Billing Address</h3>
                     <label for='street'>Street:</label>
-                    <input name='street' id='street'>
+                    <input name='street' id='street' required>
+                    <br>
                     <label for='city'>City:</label>
-                    <input name='city' id='city'>
+                    <br>
+                    <input name='city' id='city' required>
                     <br><br>
                     <label for='state'>State:</label>
-                    <input name='state' id='state' size='5'>
+                    <br>
+                    <input name='state' id='state' size='5' required>
+                    <br>
                     <label for='zipcode'>Zip Code:</label>
-                    <input name='zipcode' id='zipcode' size='10'>
+                    <br>
+                    <input name='zipcode' id='zipcode' size='10' required>
                 </div>
             {%  endif  %}
             <br>

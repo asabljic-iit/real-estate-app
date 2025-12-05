@@ -22,20 +22,20 @@ def save_agent_details(agent_id, agency, job_title, phone_number):
     return execute_query(query, tuple(params), fetch_mode='commit')
 
 # Credit Card Functions
-def get_CCN(renter_id):
+def get_credit_cards(renter_id):
     query = 'SELECT * FROM CreditCard WHERE renter_id = %s' 
     params = [renter_id]
     return execute_query(query, tuple(params), fetch_mode='all')
 
-def save_CCN(renter_id, card_number, expiration_date):
-    query = 'INSERT INTO CreditCard (credit_card_no, user_id, expiration_date) ' \
-    'VALUES (%s, %s, %s)'
-    params = [card_number, renter_id, expiration_date]
+def save_credit_card(renter_id, card_number, address_id, expiration_date):
+    query = 'INSERT INTO CreditCard (renter_id, credit_card_no, card_address_id, expiration_date) ' \
+    'VALUES (%s, %s, %s, %s)'
+    params = [renter_id, card_number, address_id, expiration_date]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
-def delete_CCN(card_number):
-    query = 'DELETE FROM CreditCard WHERE credit_card_no = %s'
-    params = [card_number]
+def delete_credit_card(renter_id, card_id):
+    query = 'DELETE FROM CreditCard WHERE renter_id = %s AND credit_card_id = %s'
+    params = [renter_id, card_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
 # Address Functions
