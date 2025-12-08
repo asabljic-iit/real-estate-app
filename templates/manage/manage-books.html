@@ -28,11 +28,17 @@
                 <tbody>
                     {% for book in bookings %}
                         <tr>
-                            {% for column in book[2:] %}
-                                <td>{{ column }}</td>
-                            {% endfor %}     
+                            {% if g.user['agency'] %}
+                                {% for column in book[1:] %}
+                                    <td>{{ column }}</td>
+                                {% endfor %}
+                            {% else %}
+                                {% for column in book[2:] %}
+                                    <td>{{ column }}</td>
+                                {% endfor %}
+                            {% endif %}
                             <td class="table-actions">
-                                <dialog id='editBooking'>
+                                <dialog id='editBooking{{ book[0] }}'>
                                     <form method="POST" action="{{ url_for('manage_bookings') }}" >
                                         <br>
                                         <input type="hidden" name="action" value="edit">
@@ -44,12 +50,12 @@
                                         </ul>
                                         <br>
                                         <button type="submit">Confirm</button>
-                                        <button type='button' class="text-button" onclick="document.getElementById('editBooking').close()">Close</button>
+                                        <button type='button' class="text-button" onclick="document.getElementById('editBooking{{ book[0] }}').close()">Close</button>
                                     </form>
                                     <br>
                                 </dialog>
-                                <button type="button" class="text-button" onclick="document.getElementById('editBooking').showModal()">Edit Booking</button>
-                                <dialog id ='cancelBooking'>
+                                <button type="button" class="text-button" onclick="document.getElementById('editBooking{{ book[0] }}').showModal()">Edit Booking</button>
+                                <dialog id ='cancelBooking{{ book[0] }}'>
                                     <form method="POST" action="{{ url_for('manage_bookings') }}" >
                                         <br>
                                         <p>Are you sure you want to cancel this booking?</p>
@@ -58,11 +64,11 @@
                                         <input type="hidden" name="property_id" value="{{ book[2] }}">
                                         <br>
                                         <button type="submit">Yes, Cancel</button>
-                                        <button type='button' class="text-button" onclick="document.getElementById('cancelBooking').close()">No, Go Back</button>
+                                        <button type='button' class="text-button" onclick="document.getElementById('cancelBooking{{ book[0] }}').close()">No, Go Back</button>
                                     </form>
                                     <br>
                                 </dialog>
-                                <button type="button" class="text-button cancel-button" onclick="document.getElementById('cancelBooking').showModal()">Cancel Booking</button>
+                                <button type="button" class="text-button cancel-button" onclick="document.getElementById('cancelBooking{{ book[0] }}').showModal()">Cancel Booking</button>
                             </td>
                         </tr>
                     {% endfor %}

@@ -53,8 +53,8 @@ INSERT INTO Property (agency, neighborhood_id, prop_type, num_rooms, description
 ('Top Realty', 8, 'House', 3, 'Charming bungalow near the ocean, great fixer-upper potential.', TRUE, 1400, 550000, '444 Beach Ave', 'Anytown', 'CA', '90211'),
 ('City Homes', 9, 'Apartment', 1, 'Brand new condominium with access to a community pool and gym.', FALSE, 700, 320000, '555 Community Cir', 'Smallville', 'TX', '77003');
 
-INSERT INTO Booking (renter_id, property_id, start_date, end_date) VALUES
-(1, 104, '2026-01-01', '2026-01-14'); -- Alice Johnson booked the VacationHome (104)
+INSERT INTO Booking (renter_id, property_id, start_date, end_date, credit_card_id) VALUES
+(1, 4, '2026-01-01', '2026-01-14', 1); -- Alice Johnson booked the VacationHome (4)
 
 INSERT INTO House (house_id) VALUES
 (1),

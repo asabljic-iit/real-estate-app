@@ -29,13 +29,23 @@ def get_credit_cards(renter_id):
 
 def save_credit_card(renter_id, card_number, address_id, expiration_date):
     query = 'INSERT INTO CreditCard (renter_id, credit_card_no, card_address_id, expiration_date) ' \
-    'VALUES (%s, %s, %s, %s)'
+    'VALUES (%s, %s, %s, %s) RETURNING credit_card_id'
     params = [renter_id, card_number, address_id, expiration_date]
-    return execute_query(query, tuple(params), fetch_mode='commit')
+    credit_card_id = execute_query(query, tuple(params), fetch_mode='return')
+    return credit_card_id
 
 def delete_credit_card(renter_id, card_id):
     query = 'DELETE FROM CreditCard WHERE renter_id = %s AND credit_card_id = %s'
     params = [renter_id, card_id]
+    return execute_query(query, tuple(params), fetch_mode='commit')
+
+def edit_credit_card(renter_id, card_id, card_number, expiration_date):
+    query = 'UPDATE CreditCard SET ' \
+            'credit_card_no = %s, ' \
+            'expiration_date = %s ' \
+            'WHERE renter_id = %s AND credit_card_id = %s'
+    
+    params = [card_number, expiration_date, renter_id, card_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
 
 # Address Functions
@@ -46,9 +56,10 @@ def get_addr(user_id):
 
 def save_addr(user_id, street, city, state, zip_code):
     query = 'INSERT INTO UserAddress (user_id, street, city, state, zip_code) ' \
-    'VALUES (%s, %s, %s, %s, %s)'
+    'VALUES (%s, %s, %s, %s, %s) RETURNING address_id'
     params = [user_id, street, city, state, zip_code]
-    return execute_query(query, tuple(params), fetch_mode='commit')
+    address_id = execute_query(query, tuple(params), fetch_mode='return')
+    return address_id
 
 def delete_addr(address_id):
     query = 'DELETE FROM UserAddress WHERE address_id = %s'

@@ -9,15 +9,34 @@
         <h1>Property Details for:<div class="propInfoTop"> {{ property.street }}, {{ property.city }}, {{ property.state }}</div></h1>
         <p></p>
         <img src="/static/assets/{{property.prop_type}}.jpg" style="width: 500px;height: 300px;">
-        <p>{{ property.description  }}</p>
+        <p>{{ property.description }}</p>
         <br>
         <h2>Property Information</h2>
-        <p>Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}</p>
+
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <div>
+                <p>Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}</p>
         <p>Type: {{ property.prop_type  }}</p>
+
+        {% if property.prop_type == 'Apartment' %}
+            <p>Building Type: {{ property.building_type }}</p>
+        {% elif property.prop_type == 'CommercialBuilding' %}
+            <p>Business Type: {{ property.business_type }}</p>
+        {% elif property.prop_type == 'Land' %}
+            <p>Zoning Type: {{ property.zoning_type}}</p>
+        {% endif %}
+
         <p>Price: ${{property.price | currency}}</p>
         <p>Number of Rooms: {{ property.num_rooms  }}</p>
         <p>Sq ft: {{  property.sq_footage  }}</p>
-        
+            </div>
+            <div>
+                <p>Neighborhood: {{  property.neighborhood_name }}</p>
+        <p>Nearby School Count: {{ property.nearby_school_count }}</p>
+        <p>Crime rate: {{ property.crime_rate }}%</p>
+            </div>
+        </div>
+
         <br>
         
         {% if not g.user['agency'] %}
@@ -43,7 +62,7 @@
                             <label for='payment'>Select Payment:</label>
                             <select name='payment' id='payment'>
                                 {% for credit_card in credit_cards %}
-                                    <option value='{{ credit_card[0] }}'>Credit Card ({{ credit_card[2] | credit_card }})</option>
+                                    <option value='{{ credit_card[0] }}'>Credit Card (**{{ credit_card[2] | credit_card }})</option>
                                 {% endfor %}
                             </select>
                         {% else %}
@@ -52,17 +71,13 @@
                             <input type='number' name='cardnum' id='cardnum' required>
                             <br><br>
                             <label for='expdate'>Expiration Date:</label>
-                            <input type='month' name='expdate' id='expdate' required>
+                            <input type='date' name='expdate' id='expdate' required>
                             <h3>Billing Address</h3>
-                            <label for='street'>Street:</label>
-                            <input name='street' id='street' required>
-                            <label for='city'>City:</label>
-                            <input name='city' id='city' required>
+                            <input type='text' id='street' name='street' placeholder="Street">
+                            <input type='text' id='city' name='city' placeholder="City">
                             <br><br>
-                            <label for='state'>State:</label>
-                            <input name='state' id='state' size='5' required>
-                            <label for='zipcode'>Zip Code:</label>
-                            <input name='zipcode' id='zipcode' size='10' required>
+                            <input type='text' id='state' name='state' size='3' placeholder="State">
+                            <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
                         {% endif %}
                         <br><br>
                         <button type="submit">Confirm Booking</button>
@@ -78,9 +93,6 @@
             {% else %}
                 <button disabled>Unavailable</button>
             {% endif %}
-        {% else %}
-            <p>You are an agent, you cant book! Tho maybe ill let you edit TBD</p>
-            <!-- add agent edit property ability? -->
         {% endif %}
         <div class="backButton"><p><button onclick="history.back()">↩</button></div></p>
     </div>

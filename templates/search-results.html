@@ -8,7 +8,7 @@
     <div class='results'>
         <h1>Search Results</h1>
         
-        <p>Searching for: {{ search_params.street }} {{ search_params.city }} {{ search_params.state }} {{ search_params.zip_code }}</p>
+        <p>Searching for: {{ search_params.street }} {{ search_params.city }} {{ search_params.state }} {{ search_params.zip_code }} {{ search_params.prop_type }} properties</p>
         <form id='searchForm' action='/search' method='GET'>
             <input type='text' id='street' name='street' placeholder="Street" value="{{ search_params.street }}">
             <input type='text' id='city' name='city' placeholder="City" value="{{ search_params.city }}">
@@ -16,7 +16,7 @@
             <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code" value="{{ search_params.zip_code }}">
             <br><br>
             <select name='prop_type' id='prop_type'>
-                <option selected value='{{ search_params.prop_type }}'>{{ search_params.prop_type }}</option>
+                <option disabled selected value =''> {{ search_params.prop_type | default('Property Type', true) }} </option>
                 <option value='House'>House</option>
                 <option value='Apartment'>Apartment</option>
                 <option value='CommercialBuilding'>Commercial Building</option>
@@ -28,8 +28,14 @@
             -
             <input type='number' id='price_max' style='width: 10.5ch; margin-left: 0;' name='price_max' min='0' placeholder="Max Price" value="{{ search_params.price_max }}">
             <input type='date' id='desired_date' name='desired_date' value="{{ search_params.desired_date }}">
+            {% set sort_map = {
+                'price_asc': 'Price: Low to High',
+                'price_desc': 'Price: High to Low',
+                'num_rooms_asc': 'Rooms: Ascending',
+                'num_rooms_desc': 'Rooms: Descending'
+            } %}
             <select id="sortDropdown" name="sort_by">
-                <option selected value="{{ search_params.sort_by }}">Sort by</option>
+                <option disabled selected value=''>{{ sort_map.get(search_params.sort_by, 'Sort by') }}</option>
                 <option value="price_asc">Price: Low to High</option>
                 <option value="price_desc">Price: High to Low</option>
                 <option value="num_rooms_asc">Rooms: Ascending</option>
@@ -38,7 +44,9 @@
             <br><br>
             <button type='submit'>Search Properties</button>
         </form>
-        <!-- <button onclick="document.getElementById('searchForm').reset()" class="text-button">Clear</button> -->
+        <form id='searchForm' action='/search' method='GET'>
+            <button onclick="document.getElementById('searchForm').reset()" class="text-button">Clear</button>
+        </form>
         <br><br>
         {% if properties %}
             <table>

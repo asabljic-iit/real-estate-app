@@ -39,9 +39,17 @@
                 <label for='budget'>Budget:</label>
                 <br>
                 <input type='number' name='budget' id='budget'>
-                <h2>Payment Method</h2>
-                <input type='button' id='paymeth' onclick='togglePayMethForm()' value='Add Payment Method'>
-                <div id='paymethForm' style='display: none;'>
+            {%  endif  %}
+            <input type='submit' value='Save' style="width: fit-content;">
+        </form>
+    </div>
+    <div class='manage-cards'>
+        {% if g.user['agency'] %}
+        {% else %}
+            <h2>Payment Method</h2>
+            <input type='button' onclick="document.getElementById('addPayMeth').showModal()" value="Add Payment Method">
+            <dialog id='addPayMeth'>
+                <form method="POST" action="{{ url_for('account') }}" >
                     <h3>Card Details</h3>
                     <label for='cardnum'>Card Number:</label>
                     <input type='number' name='cardnum' id='cardnum' required>
@@ -49,44 +57,74 @@
                     <label for='expdate'>Expiration Date:</label>
                     <input type='month' name='expdate' id='expdate' required>
                     <h3>Billing Address</h3>
-                    <label for='street'>Street:</label>
-                    <input name='street' id='street' required>
-                    <br>
-                    <label for='city'>City:</label>
-                    <br>
-                    <input name='city' id='city' required>
+                    <input type='text' id='street' name='street' placeholder="Street">
+                    <input type='text' id='city' name='city' placeholder="City">
                     <br><br>
-                    <label for='state'>State:</label>
-                    <br>
-                    <input name='state' id='state' size='5' required>
-                    <br>
-                    <label for='zipcode'>Zip Code:</label>
-                    <br>
-                    <input name='zipcode' id='zipcode' size='10' required>
-                </div>
-            {%  endif  %}
-            <br>
-            <input type='submit' value='Save' style="width: fit-content;">
-        </form>
-        <br><br>
+                    <input type='text' id='state' name='state' size='3' placeholder="State">
+                    <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
+                    <br><br>
+                    <button type="submit">Confirm</button>
+                    <button type='button' class="text-button" onclick="document.getElementById('addPayMeth').close()">Close</button>
+                </form>
+                <br>
+            </dialog>
+            {% if payment %}
+                <table>
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for card in payment %}
+                            <tr>
+                                {% for column in card[:2] %}
+                                    <td>{{ column }}</td>
+                                {% endfor %}
+                                <td>**{{ card[2] | credit_card }}</td>
+                                {% for column in card[3:] %}
+                                    <td>{{ column }}</td>
+                                {% endfor %}
+                                <td class="table-actions">
+                                    <dialog id='editCard{{ card[0] }}'>
+                                        <form method="POST" action="{{ url_for('account') }}" >
+                                            <br>
+                                            <input type="hidden" name="action" value="edit">
+                                            <input type="hidden" name="card_id" value="{{ card[0] }}">
+                                            <div style="display: flex; gap: 10px; justify-content: center;">
+                                                <div>Card Number <br><input type="text" name="new_credit_card_number" placeholder="1234567890"></div>
+                                                <div>Expiration date<br><input type="date" name="new_expiration_date" placeholder="Expiration Date"></div>
+                                            </div>
+                                            <br>
+                                            <button type="submit">Confirm</button>
+                                            <button type='button' class="text-button" onclick="document.getElementById('editCard{{ card[0] }}').close()">Close</button>
+                                        </form>
+                                        <br>
+                                    </dialog>
+                                    <button type="button" class="text-button" onclick="document.getElementById('editCard{{ card[0] }}').showModal()">Edit Card</button>
+                                    <dialog id ='cancelBooking{{ card[0] }}'>
+                                        <form method="POST" action="{{ url_for('account') }}" >
+                                            <br>
+                                            <p>Are you sure you want to delete this card?</p>
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="card_id" value="{{ card[0] }}">
+                                            <br>
+                                            <button type="submit">Yes, Delete</button>
+                                            <button type='button' class="text-button" onclick="document.getElementById('cancelBooking{{ card[0] }}').close()">No, Go Back</button>
+                                        </form>
+                                        <br>
+                                    </dialog>
+                                    <button type="button" class="text-button cancel-button" onclick="document.getElementById('cancelBooking{{ card[0] }}').showModal()">Delete Card</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No payment methods found.</p>
+            {% endif %}
+        {% endif %}
     </div>
-    <script>
-        function togglePayMethForm() {
-            const bookButton = document.getElementById('paymeth');
-            const bookingForm = document.getElementById('paymethForm');
-            
-            if (bookButton.click && bookingForm.style.display == 'none') {
-                bookingForm.style.display = 'block';
-                bookButton.value = 'Cancel';
-                // *.required = true;
-            } else {
-                bookingForm.style.display = 'none';
-                bookButton.value = 'Add Payment Method';
-                //*.required = false;
-                
-                // Optional: Clear the input when hidden
-                // *.value = ''; 
-            }
-        }
-    </script>
 {% endblock %}

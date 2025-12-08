@@ -2,9 +2,9 @@ from scripts.db import execute_query
 from scripts.property import *
 
 # Booking Page Functions
-def save_booking(renter_id, property_id, start_date, end_date):
-    query = "INSERT INTO booking (renter_id, property_id, start_date, end_date) VALUES (%s, %s, %s, %s)"
-    params = [renter_id, property_id, start_date, end_date]
+def save_booking(renter_id, property_id, start_date, end_date, credit_card_id):
+    query = "INSERT INTO booking (renter_id, property_id, start_date, end_date, credit_card_id) VALUES (%s, %s, %s, %s, %s)"
+    params = [renter_id, property_id, start_date, end_date, credit_card_id]
     
     # Use the core function to execute and commit
     execute_query(query, tuple(params), fetch_mode='commit')
@@ -14,7 +14,7 @@ def save_booking(renter_id, property_id, start_date, end_date):
 
 # Manage Booking Page Functions
 def get_renter_bookings(renter_id, agency=None):
-    #agent is needed to get bookings under an agency
+    #agency is needed to get bookings under an agency
     if agency is None:
         query = "SELECT * FROM Booking WHERE renter_id = %s ORDER BY start_date DESC"
         params = [renter_id]
@@ -25,7 +25,7 @@ def get_renter_bookings(renter_id, agency=None):
     return execute_query(query, tuple(params), fetch_mode='all')
 
 def cancel_booking(renter_id, booking_id, property_id, agency=None): 
-    #agent is needed if an agent is canceling the booking
+    #agency is needed if an agent is canceling the booking
     if agency is None:
         query = "DELETE FROM Booking WHERE renter_id = %s AND booking_id = %s"
         params = [renter_id, booking_id]

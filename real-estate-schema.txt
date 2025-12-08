@@ -115,9 +115,12 @@ CREATE TABLE Booking (
 	property_id INT UNIQUE NOT NULL,
 	start_date DATE,
 	end_date DATE,
+	credit_card_id INT NOT NULL,
 	FOREIGN KEY (renter_id) REFERENCES Renter(renter_id)
 		ON DELETE CASCADE,
 	FOREIGN KEY (property_id) REFERENCES Property(property_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY (credit_card_id) REFERENCES CreditCard(credit_card_id)
 		ON DELETE CASCADE
 );
 
