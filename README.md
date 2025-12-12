@@ -6,7 +6,11 @@ A basic real estate management application. Renters can register, add personal
 
 ## Install
 
-wip download files
+Run in terminal:
+
+```shell
+git clone https://github.com/asabljic-iit/cs425-real-estate-app.git
+```
 
 ### Prerequisites
 

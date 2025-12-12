@@ -3,33 +3,57 @@ from scripts.db import execute_query
 # Manage Property Page Functions
 # TODO- add, manage, delete properties
 def get_agency_properties(agency): #get properties under agent
-    query = "SELECT property_id, street, city, state, zip_code, num_rooms, price FROM property WHERE agency = %s"
+    query = """
+    SELECT property_id, street, city, state, zip_code, num_rooms, price, description, prop_type
+    FROM property 
+    WHERE agency = %s
+    """
     params = [agency]
     return execute_query(query, tuple(params), fetch_mode='all')
 
 def agency_add_property(agency, neighborhood_id, num_rooms, description, 
-                        sq_footage, price, street, city, state, zip_code, prop_type, building_type, business_type, zoning_type):
-    query = 'INSERT INTO property (agency, neighborhood_id, num_rooms, description, sq_footage, price, street, city, state, zip_code, prop_type)' \
-    'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING property_id'
+                        sq_footage, price, street, city, state, zip_code, 
+                        prop_type, building_type, business_type, zoning_type):
+    query = """
+    INSERT INTO property (agency, neighborhood_id, num_rooms, description, 
+    sq_footage, price, street, city, state, zip_code, prop_type) VALUES 
+    (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+    RETURNING property_id
+    """
     params = [agency, neighborhood_id, num_rooms, description, 
               sq_footage, price, street, city, state, zip_code, prop_type] 
     prop_id = execute_query(query, tuple(params), fetch_mode='return')
 
     match prop_type:
         case "House":
-            query = 'INSERT INTO House (house_id) VALUES (%s)'
+            query = """
+            INSERT INTO House (house_id) VALUES 
+            (%s)
+            """
             execute_query(query, tuple([prop_id]), fetch_mode='commit')
         case "Apartment":
-            query = 'INSERT INTO Apartment (apartment_id, building_type) VALUES (%s,%s)'
+            query = """
+            INSERT INTO Apartment (apartment_id, building_type) VALUES 
+            (%s,%s)
+            """
             execute_query(query, tuple([prop_id, building_type]), fetch_mode='commit')
         case "CommercialBuilding":
-            query = 'INSERT INTO CommercialBuilding (building_id, business_type) VALUES (%s, %s)'
+            query = """
+            INSERT INTO CommercialBuilding (building_id, business_type) VALUES 
+            (%s, %s)
+            """
             execute_query(query, tuple([prop_id, business_type]), fetch_mode='commit')
         case "VacationHome":  
-            query = 'INSERT INTO VacationHome (home_id) VALUES (%s)'
+            query = """
+            INSERT INTO VacationHome (home_id) VALUES 
+            (%s)
+            """
             execute_query(query, tuple([prop_id]), fetch_mode='commit')
         case "Land":
-            query = 'INSERT INTO Land (land_id, zoning_type) VALUES (%s, %s)'
+            query = """
+            INSERT INTO Land (land_id, zoning_type) VALUES 
+            (%s, %s)
+            """
             execute_query(query, tuple([prop_id, zoning_type]), fetch_mode='commit')
         case _:
             raise ValueError(f"Warning: No property type provided to add property_id={prop_id}.")
@@ -57,7 +81,11 @@ def agency_edit_property(agency, property_id, num_rooms, description, price):
 
     set_clause = ", ".join(updates)
     
-    query = f"UPDATE property SET {set_clause} WHERE agency=%s AND property_id=%s"
+    query = f"""
+    UPDATE property 
+    SET {set_clause} 
+    WHERE agency=%s AND property_id=%s
+    """
     params.append(agency)
     params.append(property_id)
     return execute_query(query, tuple(params), fetch_mode='commit')
@@ -73,10 +101,14 @@ def update_availability(property_id, availability):
     return execute_query(query, tuple(params), fetch_mode='commit')
 
 # Search Page Functions
-def search_properties(street, city, state, zip_code, 
-                      num_rooms, price_min, price_max, prop_type, desired_date, sort_by=None):
+def search_properties(street, city, state, zip_code, num_rooms, price_min, 
+                      price_max, prop_type, desired_date, sort_by=None):
     
-    query = "SELECT property_id, street, city, state, zip_code, description, prop_type, num_rooms, price, availability FROM property WHERE 1=1"
+    query = """
+    SELECT property_id, street, city, state, zip_code, description, prop_type, 
+    num_rooms, price, availability FROM property 
+    WHERE 1=1
+    """
     params = []
     
     if street:
@@ -105,10 +137,11 @@ def search_properties(street, city, state, zip_code,
         query += " AND price <= %s"
         params.append(price_max)
     if (desired_date):
-        query += """ AND property_id NOT IN (
-                        SELECT property_id FROM Booking 
-                        WHERE %s BETWEEN start_date AND end_date
-                    )"""
+        query += """ 
+        AND property_id NOT IN (
+            SELECT property_id FROM Booking 
+            WHERE %s BETWEEN start_date AND end_date
+        )"""
         params.append(desired_date)
         
     if sort_by == 'price_asc': 
@@ -122,19 +155,26 @@ def search_properties(street, city, state, zip_code,
     return execute_query(query, tuple(params), fetch_mode='all')
 
 def get_random_properties():
-    query = "SELECT property_id, street, city, state, description, prop_type, price FROM Property WHERE availability IS TRUE ORDER BY RANDOM() LIMIT 4"
+    query = """
+    SELECT property_id, street, city, state, description, prop_type, price, num_rooms
+    FROM Property 
+    WHERE availability IS TRUE 
+    ORDER BY RANDOM() LIMIT 4
+    """
     params = []
     return execute_query(query, tuple(params), fetch_mode='all')
 
 # Booking Page Functions
 def get_property_details(property_id):
 
-    query = """SELECT * FROM Property P 
-                JOIN Neighborhood N ON N.neighborhood_id = P.neighborhood_id 
-                FULL JOIN Apartment A ON A.apartment_id = P.property_id 
-                FULL JOIN CommercialBuilding C ON C.building_id = P.property_id
-                FULL JOIN Land L ON L.land_id = P.property_id
-                WHERE P.property_id = %s"""
+    query = """
+    SELECT * FROM Property P 
+    JOIN Neighborhood N ON N.neighborhood_id = P.neighborhood_id 
+    FULL JOIN Apartment A ON A.apartment_id = P.property_id 
+    FULL JOIN CommercialBuilding C ON C.building_id = P.property_id
+    FULL JOIN Land L ON L.land_id = P.property_id
+    WHERE P.property_id = %s
+    """
     params = [property_id]
     
     # Use the core function to execute and fetch one result

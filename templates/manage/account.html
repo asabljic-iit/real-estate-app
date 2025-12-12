@@ -5,43 +5,59 @@
 {% endblock %}
 
 {% block content %}
-    <div class='account'>
-        <h1>Your Account</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-container">
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-        <form method='post'>
-            {% if g.user['agency'] %}
-                <h2>Agent Info</h2>
-                <label for='agency'>Agency:</label>
-                <input name='agency' id='agency'>
-                <br><br>
-                <label for='title'>Job Title:</label>
-                <input name='title' id='title'>
-                <br><br>
-                <label for='phone'>Phone Number:</label>
-                <input type='tel' name='phone' id='phone'>
-            {% else %}
-                <h2>Preferences</h2>
-                <label for='movein'>Move-In Date:</label>
-                <br>
-                <input type='date' name='movein' id='movein'>
-                <br><br>
-                <label for='preferloc'>Preferred Location:</label>
-                <input name='preferloc' id='preferloc'>
-                <br><br>
-                <label for='budget'>Budget:</label>
-                <br>
-                <input type='number' name='budget' id='budget'>
-            {%  endif  %}
-            <input type='submit' value='Save' style="width: fit-content;">
-        </form>
+    <div>
+        <div class='account'>
+            <h1>Your Account</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-container">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            <form method='post'>
+                <input type="hidden" name="action" value="preferences">
+                {% if g.user['agency'] %}
+                    <h2>Agent Info</h2>
+                    <!-- TODO: add values -->
+                    <label for='agency'>Agency:</label>
+                    <br>
+                    <input name='agency' id='agency' value="{{ accountprefs.agency }}" style="text-align: center;">
+                    <br><br>
+                    <label for='title'>Job Title:</label>
+                    <br>
+                    {% if accountprefs.job_title is none %}
+                        <input name='title' id='title' style="text-align: center;">
+                    {% else %}
+                        <input name='title' id='title' value="{{ accountprefs.job_title }}" style="text-align: center;">
+                    {% endif %}
+                    <br><br>
+                    {% if accountprefs.phone_number is none %}
+                        <label for='phone'>Phone Number:</label>
+                        <input type='tel' name='phone' id='phone' style="text-align: center;">
+                    {% else %}
+                        <label for='phone'>Phone Number:</label>
+                        <input type='tel' name='phone' id='phone' value="{{ accountprefs.phone_number }}" style="text-align: center;">
+                    {% endif %}
+                {% else %}
+                    <h2>Preferences</h2>
+                    <label for='movein'>Move-In Date:</label>
+                    <br>
+                    <input type='date' name='movein' id='movein' value="{{ accountprefs.desired_move_in_date }}" style="text-align: center;">
+                    <br><br>
+                    <label for='preferloc'>Preferred Location:</label>
+                    <input name='preferloc' id='preferloc' placeholder="{{ accountprefs.preferred_location }}" style="text-align: center;">
+                    <br><br>
+                    <label for='budget'>Budget:</label>
+                    <br>
+                    <input type='number' name='budget' id='budget' placeholder="{{ accountprefs.budget }}" style="text-align: center;"">
+                {%  endif  %}
+                <input type='submit' value='Save' style="width: fit-content;">
+            </form>
+        </div>
+        
     </div>
     <div class='manage-cards'>
         {% if g.user['agency'] %}
@@ -50,18 +66,19 @@
             <input type='button' onclick="document.getElementById('addPayMeth').showModal()" value="Add Payment Method">
             <dialog id='addPayMeth'>
                 <form method="POST" action="{{ url_for('account') }}" >
+                    <input type="hidden" name="action" value="create">
                     <h3>Card Details</h3>
                     <label for='cardnum'>Card Number:</label>
                     <input type='number' name='cardnum' id='cardnum' required>
                     <br><br>
                     <label for='expdate'>Expiration Date:</label>
-                    <input type='month' name='expdate' id='expdate' required>
+                    <input type='date' name='expdate' id='expdate' required>
                     <h3>Billing Address</h3>
-                    <input type='text' id='street' name='street' placeholder="Street">
-                    <input type='text' id='city' name='city' placeholder="City">
+                    <input type='text' id='street' name='street' placeholder="Street" required>
+                    <input type='text' id='city' name='city' placeholder="City" required>
                     <br><br>
-                    <input type='text' id='state' name='state' size='3' placeholder="State">
-                    <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
+                    <input type='text' id='state' name='state' size='3' placeholder="State" required>
+                    <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code" required>
                     <br><br>
                     <button type="submit">Confirm</button>
                     <button type='button' class="text-button" onclick="document.getElementById('addPayMeth').close()">Close</button>
@@ -94,8 +111,8 @@
                                             <input type="hidden" name="action" value="edit">
                                             <input type="hidden" name="card_id" value="{{ card[0] }}">
                                             <div style="display: flex; gap: 10px; justify-content: center;">
-                                                <div>Card Number <br><input type="text" name="new_credit_card_number" placeholder="1234567890"></div>
-                                                <div>Expiration date<br><input type="date" name="new_expiration_date" placeholder="Expiration Date"></div>
+                                                <div>Card Number <br><input type="number" name="new_credit_card_number" placeholder="1234567890" required></div>
+                                                <div>Expiration date<br><input type="date" name="new_expiration_date" placeholder="Expiration Date" required></div>
                                             </div>
                                             <br>
                                             <button type="submit">Confirm</button>
@@ -124,6 +141,23 @@
                 </table>
             {% else %}
                 <p>No payment methods found.</p>
+            {% endif %}
+        {% endif %}
+        <br>
+    </div>
+    <div>
+        {% if g.user['agency'] is none %}
+            <h2>Rewards Program</h2>
+            {% if g.user['activated'] %}
+                <div class="rewardsProgram">
+                    Total Points:
+                    {{ rewards.total_points }}
+                </div>
+            {% else %}
+                <form method="POST" action="{{ url_for('account') }}">
+                    <input type="hidden" name="action" value="rewards">
+                    <button type="submit">Join Rewards Program</button>
+                </form>
             {% endif %}
         {% endif %}
     </div>

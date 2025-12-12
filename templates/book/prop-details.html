@@ -11,29 +11,32 @@
         <img src="/static/assets/{{property.prop_type}}.jpg" style="width: 500px;height: 300px;">
         <p>{{ property.description }}</p>
         <br>
-        <h2>Property Information</h2>
+        
 
         <div style="display: flex; gap: 10px; justify-content: center;">
             <div>
-                <p>Address: {{ property.street }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}</p>
-        <p>Type: {{ property.prop_type  }}</p>
+                <h3>Property Information:</h3>
+                <p>Type: {{ property.prop_type  }}</p>
 
-        {% if property.prop_type == 'Apartment' %}
-            <p>Building Type: {{ property.building_type }}</p>
-        {% elif property.prop_type == 'CommercialBuilding' %}
-            <p>Business Type: {{ property.business_type }}</p>
-        {% elif property.prop_type == 'Land' %}
-            <p>Zoning Type: {{ property.zoning_type}}</p>
-        {% endif %}
+                {% if property.prop_type == 'Apartment' %}
+                    <p>Apartment</p>
+                {% elif property.prop_type == 'CommercialBuilding' %}
+                    <p>Commercial Building</p>
+                {% elif property.prop_type == 'Land' %}
+                    <p>Land</p>
+                {% elif property.prop_type == 'VacationHome' %}
+                    <p>Vacation Home</p>
+                {% endif %}
 
-        <p>Price: ${{property.price | currency}}</p>
-        <p>Number of Rooms: {{ property.num_rooms  }}</p>
-        <p>Sq ft: {{  property.sq_footage  }}</p>
+                <p>Price: ${{property.price | currency}}</p>
+                <p>Number of Rooms: {{ property.num_rooms  }}</p>
+                <p>Sq ft: {{  property.sq_footage  }}</p>
             </div>
             <div>
+                <h3> Neighborhood Information:</h3>
                 <p>Neighborhood: {{  property.neighborhood_name }}</p>
-        <p>Nearby School Count: {{ property.nearby_school_count }}</p>
-        <p>Crime rate: {{ property.crime_rate }}%</p>
+                <p>Nearby School Count: {{ property.nearby_school_count }}</p>
+                <p>Crime rate: {{ property.crime_rate }}%</p>
             </div>
         </div>
 
@@ -52,21 +55,23 @@
                     {% endif %}
                 {% endwith %}
                 <div id='bookingForm' style='display: none;'>
-                    <form method="post">
+                    <form method="POST">
                         <label for='start_date'>Start Date:</label>
                         <input type="date" id="start_date" name="start_date" required>
                         <label for='start_date'>End Date:</label>
-                        <input type="date" id="start_date" name="end_date" required>
+                        <input type="date" id="end_date" name="end_date" required>
                         <br><br>
                         {% if credit_cards %}
+                            <input type="hidden" name="newcard" value="no">
                             <label for='payment'>Select Payment:</label>
                             <select name='payment' id='payment'>
                                 {% for credit_card in credit_cards %}
-                                    <option value='{{ credit_card[0] }}'>Credit Card (**{{ credit_card[2] | credit_card }})</option>
+                                    <option value='{{ credit_card[0] }},{{ credit_card[2] }}'>Credit Card (**{{ credit_card[2] | credit_card }})</option>
                                 {% endfor %}
                             </select>
                         {% else %}
-                        <h3>Card Details</h3>
+                            <input type="hidden" name="newcard" value="yes">
+                            <h3>Card Details</h3>
                             <label for='cardnum'>Card Number:</label>
                             <input type='number' name='cardnum' id='cardnum' required>
                             <br><br>
@@ -80,9 +85,13 @@
                             <input type='text' id='zip_code' name='zip_code' size='6' placeholder="Zip Code">
                         {% endif %}
                         <br><br>
-                        <button type="submit">Confirm Booking</button>
+                        <button type="submit" name="action" value="book">Confirm Booking</button>
+                        {% if g.user['activated'] %}
+                        <br><br>
+                        <button type="submit" name="action" value="redeem">Use Rewards Points</button>
+                        {% endif %}
+                        <br><br>
                     </form>
-                    <br>
                 </div>
                 {% if g.user %}
                     <button id='book' onclick='toggleBookingForm()'>Book</button>

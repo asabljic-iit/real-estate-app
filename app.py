@@ -5,7 +5,6 @@ from datetime import datetime, date
 from flask import Flask, render_template, request, flash, abort, g, session
 from flask import redirect, url_for
 
-from scripts.misc import *
 from scripts.account import *
 from scripts.auth import *
 from scripts.book import *
@@ -13,6 +12,8 @@ from scripts.property import *
 
 app = Flask(__name__)
 app.config.from_mapping(SECRET_KEY='dev') # change when deploying
+app.config['MESSAGE_FLASHING_OPTIONS'] = {'duration': 5}
+
 
 # Miscellanous Functions
 def format_currency(value):
@@ -27,7 +28,7 @@ def format_currency(value):
 app.jinja_env.filters['currency'] = format_currency
 
 def format_credit_card(value):
-    """Formats a number with comma separators (e.g., 350000 -> 350,000)"""
+    """Formats credit card number to last 4 digits."""
     if value is None:
         return ""
     try:
@@ -87,6 +88,7 @@ def logout():
 # - Search properties (all users)
 # - Book properties (prospective renters)
 
+
 # Home Page
 @app.route('/')
 def home():
@@ -96,6 +98,7 @@ def home():
     return render_template('home.html',
                            headers=display_headers, 
                            properties=results)
+
 
 # User Register Page
 # Both agents and prospective renters can register with an email and personal
@@ -118,6 +121,7 @@ def register():
 
     return render_template('auth/register.html')
 
+
 # User Login Page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -135,14 +139,14 @@ def login():
 
     return render_template('auth/login.html')
 
-# Renter- Account Page
-# TODO- Renters can add, modify, or delete addresses and credit cards. 
-#  Billing addresses cannot be deleted before deleting the associated credit card.
-# TODO OPTIONAL- Renters can join a reward program. Reward points are earned equal to the
-#  rental price for each booking.
 
-# TODO Renter- save info, display saved info (if any), and add rewards program
-# TODO Agent- save job title, agency, contact info (phone num)
+# Account Page
+# TODO- modify addresses
+# Renters can add, modify, or delete addresses and credit cards. 
+#  Billing addresses cannot be deleted before deleting the associated credit 
+#  card.
+# Renters can join a reward program. Reward points are earned equal to the
+#  rental price for each booking.
 @app.route('/your-account', methods=['GET', 'POST'])
 @login_required
 def account():
@@ -159,16 +163,25 @@ def account():
             try:
                 save_agent_details(g.user["user_id"], agency, title, phone)
             except Exception as e:
-                flash(f'yeah idk twin you`re on ur own: {str(e)}', 'error')
+                flash(f'Error saving account details: {str(e)}', 'error')
+
         elif action == "delete":
             card_id = request.form.get("card_id")
-            delete_credit_card(g.user["user_id"], card_id)
+            try:
+                delete_credit_card(g.user["user_id"], card_id)
+            except Exception as e:
+                flash(f'Error deleting credit card: {str(e)}', 'error')
 
         elif action == "edit":
             card_id = request.form.get("card_id")
             newCardnum = request.form.get("new_credit_card_number")
             newExpdate = request.form.get("new_expiration_date")
-            edit_credit_card(g.user["user_id"], card_id, newCardnum, newExpdate)
+
+            try:
+                edit_credit_card(g.user["user_id"], card_id, newCardnum, 
+                                 newExpdate)
+            except Exception as e:
+                flash(f'Error editing credit card: {str(e)}', 'error')
 
         elif action == "create":
             card_number = request.form.get('cardnum')
@@ -178,28 +191,42 @@ def account():
             state = request.form.get('state')
             zipcode = request.form.get('zipcode')
 
+            try:
+                address_id = save_addr(g.user['user_id'], street, city, state, 
+                                       zipcode)
+                save_credit_card(g.user['user_id'], card_number, address_id, 
+                                 expiration_date)
+            except Exception as e:
+                flash(f'Error saving credit card: {str(e)}', 'error')
+            
+        elif action == 'preferences':
             movein = request.form.get('movein')
             preferloc = request.form.get("preferloc")
             budget = request.form.get("budget")
 
-            try:
-                address_id = save_addr(g.user['user_id'], street, city, state, zipcode)
-                save_credit_card(g.user['user_id'], card_number, address_id, expiration_date)
-            except Exception as e:
-                flash(f'Error saving credit card: {str(e)}', 'error')
-                return redirect(url_for('book_property', property_id=property_id))
-            
             try: 
                 save_renter_prefs(g.user["user_id"], movein, preferloc, budget)
             except Exception as e:
-                flash(f"Error saving this stuff bc i haven't finisheed it: {str(e)}", 'error')
-                return redirect(url_for('book_property', property_id=property_id))
+                flash(f"Error saving your preferences: {str(e)}", 'error')
+            
+        elif action == 'rewards':
+
+            try:
+                enroll_rewards(g.user["user_id"])
+            except Exception as e:
+                flash(f"an error has occured please try again later {str(e)}", 'error')
+        
         else:
             # Handle other POST requests or missing data
             flash('Invalid action or missing booking or property ID.', 'error')
 
+        
+
     headers, results = get_credit_cards(g.user['user_id'])
-    return render_template('manage/account.html', headers= headers, payment =results)
+    rewards = get_rewards(g.user['user_id'])
+    accountprefs = get_account(g.user['user_id'])
+    return render_template('manage/account.html', headers=headers, payment=results, rewards=rewards, accountprefs=accountprefs)
+
 
 # Agent- Manage Properties Page
 # Add, manage, delete properties.
@@ -234,16 +261,18 @@ def manage_properties():
         
         elif action == 'edit' and property_id:
             try: 
-                agency_edit_property(g.user['agency'], property_id, num_rooms, description, price)
+                agency_edit_property(g.user['agency'], property_id, num_rooms, 
+                                     description, price)
                 flash(f'{property_id} has been successfully edited.', 'success')
             except Exception as e:
                 flash(f'Error editing property: {str(e)}', 'error')
         
         elif action == 'add':
             try:
-                print(business_type)
-                agency_add_property(g.user['agency'], neighborhood_id, num_rooms, description,
-                                    sq_footage, price, street, city, state, zip_code, prop_type, building_type, business_type, zoning_type)
+                agency_add_property(g.user['agency'], neighborhood_id, num_rooms,
+                                    description, sq_footage, price, street, city, 
+                                    state, zip_code, prop_type, building_type, 
+                                    business_type, zoning_type)
                 flash('Property has been successfully added.', 'success')
             except Exception as e:
                 flash(f'Error adding property: {str(e)}', 'error')
@@ -258,6 +287,7 @@ def manage_properties():
     return render_template('manage/manage-props.html',
                            headers=display_headers, 
                            properties=results)
+
 
 # Search Results Page
 # DONE- Search by location, 
@@ -295,20 +325,20 @@ def search():
 
 
 # Renter- Property Details/Booking Page
-# DONE- Renters select a property, rental period, and payment method. 
+# Renters select a property, rental period, and payment method. 
 # Add new payment from booking page.
-# Booking details show rental period, total cost, and TODO- payment method.
+# Booking details show rental period, total cost, and payment method.
 @app.route('/property-details/<property_id>', methods=['GET', 'POST'])
 def book_property(property_id):
     property_details = get_property_details(property_id)
 
     if request.method == 'POST':
+        is_newcard = request.form['newcard']
+        action = request.form['action']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
-        credit_card_id = request.form.get('payment')
-        card_number = request.form.get('cardnum')
+        credit_card = [None, request.form.get('cardnum')]
         expiration_date = request.form.get('expdate')
-
         street = request.form.get('street')
         city = request.form.get('city')
         state = request.form.get('state')
@@ -317,7 +347,7 @@ def book_property(property_id):
         try:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-            if not credit_card_id:
+            if is_newcard=='yes':
                 expiration_date = datetime.strptime(expiration_date, '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid date format submitted.', 'error')
@@ -325,22 +355,30 @@ def book_property(property_id):
 
         today = date.today() 
 
-        try:
-            address_id = save_addr(g.user['user_id'], street, city, state, zipcode)
-            credit_card_id = save_credit_card(g.user['user_id'], card_number, address_id, expiration_date)
-        except Exception as e:
-            flash(f'Error saving credit card: {str(e)}', 'error')
-            return redirect(url_for('book_property', property_id=property_id))
-
         if start_date < today:
             flash('The booking date cannot be in the past. Please select today or a future date.', 'error')
         else:
             try:
-                save_booking(g.user['user_id'], property_id, start_date, end_date, credit_card_id) # add payment method
+                if is_newcard=='yes':
+                    address_id = save_addr(g.user['user_id'], street, city, state, zipcode)
+                    credit_card[0] = save_credit_card(g.user['user_id'], credit_card[1], address_id, expiration_date)
+                else:
+                    credit_card = request.form.get('payment').split(',') 
+                
+                save_booking(g.user['user_id'], property_id, start_date, end_date, 
+                             credit_card[0])
+        
+                if action =='redeem':
+                    redeem_rewards_points(g.user['user_id'], property_details['price'])
+
+                elif g.user['activated']:
+                    add_rewards_points(g.user['user_id'], property_details['price'])
+                
                 flash('Sucessfully booked!', 'success')
                 return render_template('book/confirmation.html', 
                                        property=property_details,
-                                       booking=[start_date, end_date, str(credit_card_id)[-4:]]) #TODO- add payment method
+                                       booking=[start_date, end_date, 
+                                                str(credit_card[1])[-4:]])
             except ValueError as error:
                 flash(str(error), 'error')
             except Exception as error:
@@ -349,15 +387,18 @@ def book_property(property_id):
     if property_details:
         if g.user:
             headers, results = get_credit_cards(g.user['user_id'])
+            reward_details= get_rewards(g.user['user_id'])
             return render_template('book/prop-details.html', 
                                 property=property_details,
                                 headers=headers,
-                                credit_cards=results)
+                                credit_cards=results,
+                                reward_details=reward_details)
         else:
             return render_template('book/prop-details.html', 
                                 property=property_details)
     else:
         abort(404)
+
 
 # Manage Bookings Page
 # Renters can view and cancel their bookings. Refunds go to the saved
@@ -374,7 +415,8 @@ def manage_bookings():
         new_start_date = request.form.get('new_start_date')
         new_end_date = request.form.get('new_end_date')
 
-        if action == 'edit' and booking_id and property_id and new_start_date and new_end_date:
+        if action == 'edit' and (booking_id and property_id and new_start_date 
+                                 and new_end_date):
             try:
                 new_start_date = datetime.strptime(new_start_date, '%Y-%m-%d').date()
                 new_end_date = datetime.strptime(new_end_date, '%Y-%m-%d').date()
@@ -383,7 +425,8 @@ def manage_bookings():
                 return redirect(url_for('manage_bookings'))
     
             try:
-                edit_booking(g.user['user_id'], booking_id, new_start_date, new_end_date, g.user['agency'])               
+                edit_booking(g.user['user_id'], booking_id, new_start_date, 
+                             new_end_date, g.user['agency'])               
                 flash(f'{property_id} has been successfully edited.', 'success')
             except Exception as e:
                 flash(f'Error editing booking: {str(e)}', 'error')
@@ -392,7 +435,15 @@ def manage_bookings():
         
         elif action == 'cancel' and booking_id and property_id:
             try:
-                cancel_booking(g.user['user_id'], booking_id, property_id, g.user['agency'])               
+                property_details = get_property_details(property_id)
+
+                cancel_booking(g.user['user_id'], booking_id, property_id, 
+                               g.user['agency'])
+                
+                if g.user['activated']:
+                    print("you are removing: ", property_details['price'])
+                    add_rewards_points(g.user['user_id'], property_details['price'])
+                    
                 flash(f'{property_id} has been successfully cancelled.', 'success')
             except Exception as e:
                 flash(f'Error cancelling booking: {str(e)}', 'error')
@@ -412,6 +463,7 @@ def manage_bookings():
     return render_template('manage/manage-books.html', 
                            headers=display_headers, 
                            bookings=results)
+
 
 if __name__ == '__main__':
     app.run(debug=True) # debug=True allows editing w/o having to restart server

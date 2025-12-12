@@ -74,8 +74,8 @@ CREATE TABLE CreditCard (
 
 CREATE TABLE Rewards (
 	renter_id INT PRIMARY KEY,
-	total_points INT DEFAULT 0,
-	activated BOOLEAN,
+	total_points INT DEFAULT 0 CHECK (total_points >= 0),
+	activated BOOLEAN DEFAULT FALSE,
 	FOREIGN KEY (renter_id) REFERENCES Renter(renter_id)
 		ON DELETE CASCADE
 );

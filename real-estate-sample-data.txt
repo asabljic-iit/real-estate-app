@@ -14,6 +14,10 @@ INSERT INTO Renter (renter_id, desired_move_in_date, preferred_location, budget)
 (1, '2026-03-01', 'Downtown', 2500), -- Alice Johnson (user_id 1)
 (2, '2026-05-15', 'Suburban Park', 1800);  -- Bob Smith (user_id 2)
 
+INSERT INTO Rewards (renter_id) VALUES
+(1),
+(2);
+
 INSERT INTO Agent (agent_id, agency, job_title, phone_number) VALUES
 (3, 'Top Realty', 'Senior Agent', 5551234223), -- Charlie Brown (user_id 3)
 (4, 'City Homes', 'Broker', 5558231567);        -- Diana Prince (user_id 4)

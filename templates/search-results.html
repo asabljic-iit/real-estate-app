@@ -47,35 +47,37 @@
         <form id='searchForm' action='/search' method='GET'>
             <button onclick="document.getElementById('searchForm').reset()" class="text-button">Clear</button>
         </form>
-        <br><br>
+        <br>
         {% if properties %}
-            <table>
-                <thead>
-                    <tr>
-                        {% for header in headers %}
-                            <th>{{ header }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for property in properties %}
-                        <tr>
-                            {% for column in property[1:8] %}
-                                <td>{{ column }}</td>
-                            {% endfor %}
-                            <td>${{ property[8] | currency }}</td>
-                            {% for column in property[9:] %}
-                                <td>{{ column }}</td>
-                            {% endfor %}
-                            <td>
-                                <a href="{{ url_for('book_property', property_id=property[0]) }}">
-                                    <button type="button">See details</button>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="cards">
+                {% for property in properties %}
+                    <a class="card" href="{{ url_for('book_property', property_id=property[0]) }}" aria-label="View details for {{ property[1] }}, {{ property[2] }}, {{ property[3] }}">
+                        <div class="topHalf">
+                            <img src="/static/assets/{{property[6]}}.jpg" alt="piccyture" style="width: 100%; height: fit-content;">
+                        </div>
+                        <div class="btmHalf">
+                            <div>
+                                <h3>{{ property[1] }}</h3>
+                                <h4> {{ property[2] }}, {{ property[3] }}</h4>
+                            </div>
+                            <p>{{ property[5] }}</p>
+
+                            <div>
+                                <span>{{property[7]}} Rooms</span>
+                                <br>
+                                <span>${{property[8] | currency}}</span>
+                                <br><br>
+                                {% if property[9] == True %}
+                                    <span style="color: green;">I'm Available!</span>
+                                {% else %}
+                                    <span style="color: red;">Not Available</span>
+                                {% endif %}
+                            </div>
+                            <br>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
         {% else %}
             <p>No properties found matching your criteria.</p>
         {% endif %}

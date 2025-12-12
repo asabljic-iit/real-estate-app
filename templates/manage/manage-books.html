@@ -17,63 +17,76 @@
             {% endif %}
         {% endwith %}
         {% if bookings %}
-            <table>
-                <thead>
-                    <tr>
-                        {% for header in headers %}
-                            <th>{{ header }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for book in bookings %}
-                        <tr>
+        <div class="cards">
+            {% for book in bookings %}
+                <div class="card">
+                    <div>
+                        {% if g.user['agency'] %}
+                            <h3>Property ID: {{ book[2] }}</h3>
+                            <br>
+                            <p>Renter Email: {{ book[6] }}</p>
+                            <p>Name: {{ book[7] }} </p>
+                            <br>
+                            <p>Start Date: {{ book[3] }}</p>
+                            <p>End Date: {{ book[4] }}</p>
+                        {% else %}
+                            <h2>You booked<h2>
+                            <br>
+                            <h3>{{ book[6] }}<h3>
+                            <h3>{{ book[7] }}, {{ book[8] }} </h3>
+                            <br>
+                            <p>Start Date: {{ book[3] }}</p>
+                            <p>End Date: {{ book[4] }}</p>
+                            <p>
+                        {% endif %}
+                    </div>
+                    <br><br>
+                    <a class="button" href="{{ url_for('book_property', property_id=book[2]) }}" aria-label="View Property {{ book[2] }}">
+                    <button type="button">View Property</button></a>
+                    <div style="display: flex; justify-content: center;">
+                        <button type="button" class="text-button" onclick="document.getElementById('editBooking{{ book[0] }}').showModal()">Edit</button>
+                        <dialog id='editBooking{{ book[0] }}'>
+                            <form method="POST" action="{{ url_for('manage_bookings') }}" >
+                                <header><h2>Edit Rental Date</h2></header>
+                                <br>
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="booking_id" value="{{ book[0] }}">
+                                <input type="hidden" name="property_id" value="{{ book[2] }}">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label for="start_date" style="font-size: 12px;">Start Date:</label>
+                                        <input type="date" id ="start_date" name="new_start_date">
+                                    <label for="end_date" style="font-size: 12px; margin-left: 15px;">End Date:</label>
+                                        <input type="date" id ="end_date"  name="new_end_date">
+                                </div>
+                                <br>
+                                <button type="submit">Confirm</button>
+                                <button type='button' class="text-button" onclick="document.getElementById('editBooking{{ book[0] }}').close()">Close</button>
+                            </form>
+                            <br>
+                        </dialog>
+                        <button type="button" class="text-button cancel-button" onclick="document.getElementById('cancelBooking{{ book[0] }}').showModal()">Cancel</button>
+                    </div>
+                    <dialog id ='cancelBooking{{ book[0] }}'>
+                        <form method="POST" action="{{ url_for('manage_bookings') }}" >
+                            <br>
+                            <p>Are you sure you want to cancel this booking?</p>
                             {% if g.user['agency'] %}
-                                {% for column in book[1:] %}
-                                    <td>{{ column }}</td>
-                                {% endfor %}
+                                <p>Refunds go back to renter's chosen payment method.</p>
                             {% else %}
-                                {% for column in book[2:] %}
-                                    <td>{{ column }}</td>
-                                {% endfor %}
+                                <p>Refunds go back to card ending in **{{ book[9] | credit_card }}</p>
                             {% endif %}
-                            <td class="table-actions">
-                                <dialog id='editBooking{{ book[0] }}'>
-                                    <form method="POST" action="{{ url_for('manage_bookings') }}" >
-                                        <br>
-                                        <input type="hidden" name="action" value="edit">
-                                        <input type="hidden" name="booking_id" value="{{ book[0] }}">
-                                        <input type="hidden" name="property_id" value="{{ book[2] }}">
-                                        <ul>
-                                            <li>Start Date<br><input type="date" name="new_start_date" placeholder="Start Date">
-                                            <li>End Date<br><input type="date" name="new_end_date" placeholder="End Date">
-                                        </ul>
-                                        <br>
-                                        <button type="submit">Confirm</button>
-                                        <button type='button' class="text-button" onclick="document.getElementById('editBooking{{ book[0] }}').close()">Close</button>
-                                    </form>
-                                    <br>
-                                </dialog>
-                                <button type="button" class="text-button" onclick="document.getElementById('editBooking{{ book[0] }}').showModal()">Edit Booking</button>
-                                <dialog id ='cancelBooking{{ book[0] }}'>
-                                    <form method="POST" action="{{ url_for('manage_bookings') }}" >
-                                        <br>
-                                        <p>Are you sure you want to cancel this booking?</p>
-                                        <input type="hidden" name="action" value="cancel">
-                                        <input type="hidden" name="booking_id" value="{{ book[0] }}">
-                                        <input type="hidden" name="property_id" value="{{ book[2] }}">
-                                        <br>
-                                        <button type="submit">Yes, Cancel</button>
-                                        <button type='button' class="text-button" onclick="document.getElementById('cancelBooking{{ book[0] }}').close()">No, Go Back</button>
-                                    </form>
-                                    <br>
-                                </dialog>
-                                <button type="button" class="text-button cancel-button" onclick="document.getElementById('cancelBooking{{ book[0] }}').showModal()">Cancel Booking</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            <input type="hidden" name="action" value="cancel">
+                            <input type="hidden" name="booking_id" value="{{ book[0] }}">
+                            <input type="hidden" name="property_id" value="{{ book[2] }}">
+                            <br>
+                            <button type="submit">Yes, Cancel</button>
+                            <button type='button' class="text-button" onclick="document.getElementById('cancelBooking{{ book[0] }}').close()">No, Go Back</button>
+                        </form>
+                        <br>
+                    </dialog>
+                </div>
+            {% endfor %}
+        </div>
         {% else %}
             <p>No bookings found.</p>
         {% endif %}

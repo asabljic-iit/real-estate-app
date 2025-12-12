@@ -27,7 +27,8 @@
         <br>
         Total Cost: {{ property.price | currency }}
         <br>
-        Payment Method: Credit Card ({{booking[2]}})
+        <!-- TODO: payment method with points -->
+        Payment Method: Credit Card (**{{booking[2]}})
         <br><br>
         <p><a href="{{ url_for('home') }}"><button>Back to Home</button></a></p>
     </div>
