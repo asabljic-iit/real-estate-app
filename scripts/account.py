@@ -141,12 +141,3 @@ def redeem_rewards_points(renter_id, total_points):
     """
     params = [total_points, renter_id]
     return execute_query(query, tuple(params), fetch_mode='commit')
-
-def remove_rewards_point(total_points, renter_id):
-    query = """
-    UPDATE Rewards 
-    SET total_points = GREATEST(total_points - %s, 0)
-    WHERE renter_id = %s
-    """
-    params = [total_points, renter_id]
-    return execute_query(query, tuple(params), fetch_mode='commit')

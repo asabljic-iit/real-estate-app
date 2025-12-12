@@ -68,13 +68,3 @@ def get_user(user_id):
     WHERE U.user_id = %s;
     """
     return execute_query(query, tuple([user_id]), fetch_mode='one')
-
-
-def get_agency(agent_id):
-    """Get agency name from agent."""
-    
-    query = """
-    SELECT agency FROM Agent
-    """
-    params = [agent_id]
-    return execute_query(query, tuple(params), fetch_mode='one')

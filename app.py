@@ -141,7 +141,6 @@ def login():
 
 
 # Account Page
-# TODO- modify addresses
 # Renters can add, modify, or delete addresses and credit cards. 
 #  Billing addresses cannot be deleted before deleting the associated credit 
 #  card.
@@ -290,13 +289,11 @@ def manage_properties():
 
 
 # Search Results Page
-# DONE- Search by location, 
-# TODO?- rental/sale type (dropdown),
-# DONE- number of bedrooms (num), price range (num min, range max), property type,
-#  and desired date.
-# DONE- Only available properties meeting all criteria are shown.
-# DONE- Results display price, bedrooms, property type, and description.
-# DONE- Users can sort results by price or number of bedrooms.
+# Search by location, number of bedrooms (num), price range (num min, range max),
+#  property type, and desired date.
+# Only available properties meeting all criteria are shown.
+# Results display price, bedrooms, property type, and description.
+# Users can sort results by price or number of bedrooms.
 @app.route('/search', methods=['GET'])
 def search():
     # Get the search criteria from the URL query parameters
@@ -360,8 +357,11 @@ def book_property(property_id):
         else:
             try:
                 if is_newcard=='yes':
-                    address_id = save_addr(g.user['user_id'], street, city, state, zipcode)
-                    credit_card[0] = save_credit_card(g.user['user_id'], credit_card[1], address_id, expiration_date)
+                    address_id = save_addr(g.user['user_id'], street, city, 
+                                           state, zipcode)
+                    credit_card[0] = save_credit_card(g.user['user_id'], 
+                                                      credit_card[1], address_id, 
+                                                      expiration_date)
                 else:
                     credit_card = request.form.get('payment').split(',') 
                 
