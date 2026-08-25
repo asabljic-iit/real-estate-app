@@ -9,7 +9,7 @@ A basic real estate management application. Renters can register, add personal
 Run in terminal:
 
 ```shell
-git clone https://github.com/asabljic-iit/cs425-real-estate-app.git
+git clone https://github.com/asabljic-iit/real-estate-app.git
 ```
 
 ### Prerequisites
