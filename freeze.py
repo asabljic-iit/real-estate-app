@@ -1,4 +1,4 @@
-# frozen demo page
+import os
 import app as app_module
 from flask_frozen import Freezer
 
@@ -112,6 +112,7 @@ MOCK_PROPERTIES = [
     },
 ]
 
+
 def mock_get_random_properties():
     headers = [
         "property_id", "street", "city", "state",
@@ -144,23 +145,21 @@ app_module.get_property_details = mock_get_property_details
 app.config["FREEZER_DESTINATION"] = "build"
 app.config["FREEZER_RELATIVE_URLS"] = True
 app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
+app.config["FREEZER_IGNORE_MIMETYPE_WARNINGS"] = True
 app.config["FREEZER_REDIRECT_POLICY"] = "follow"
 
 freezer = Freezer(app)
 
 
-# Generate static HTML pages for every property ID
 @freezer.register_generator
 def book_property():
     for p in MOCK_PROPERTIES:
         yield {"property_id": str(p["property_id"])}
 
-import os
-import shutil
 
 @freezer.register_generator
 def static():
-    assets_dir = os.path.join(flask_app.static_folder, "assets")
+    assets_dir = os.path.join(app.static_folder, "assets")
     for filename in os.listdir(assets_dir):
         yield {"filename": f"assets/{filename}"}
 
