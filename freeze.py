@@ -1,5 +1,6 @@
 import os
 import app as app_module
+import shutil
 from flask_frozen import Freezer
 
 app = app_module.app
