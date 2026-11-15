@@ -143,7 +143,7 @@ app_module.search_properties = mock_search_properties
 app_module.get_property_details = mock_get_property_details
 
 app.config["FREEZER_DESTINATION"] = "build"
-app.config["FREEZER_RELATIVE_URLS"] = True
+app.config["FREEZER_RELATIVE_URLS"] = False
 app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
 app.config["FREEZER_IGNORE_MIMETYPE_WARNINGS"] = True
 app.config["FREEZER_REDIRECT_POLICY"] = "follow"
