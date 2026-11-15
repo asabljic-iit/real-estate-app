@@ -143,7 +143,7 @@ app_module.search_properties = mock_search_properties
 app_module.get_property_details = mock_get_property_details
 
 app.config["FREEZER_DESTINATION"] = "build"
-app.config["FREEZER_RELATIVE_URLS"] = False
+app.config["FREEZER_RELATIVE_URLS"] = True
 app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
 app.config["FREEZER_IGNORE_MIMETYPE_WARNINGS"] = True
 app.config["FREEZER_REDIRECT_POLICY"] = "follow"
@@ -166,4 +166,16 @@ def static():
 
 if __name__ == "__main__":
     freezer.freeze()
+
+    # Convert extensionless property-details/1 -> property-details/1/index.html
+    details_dir = os.path.join(app.config["FREEZER_DESTINATION"], "property-details")
+    if os.path.isdir(details_dir):
+        for entry in os.listdir(details_dir):
+            full_path = os.path.join(details_dir, entry)
+            if os.path.isfile(full_path):
+                tmp_path = full_path + ".tmp"
+                os.rename(full_path, tmp_path)
+                os.makedirs(full_path, exist_ok=True)
+                shutil.move(tmp_path, os.path.join(full_path, "index.html"))
+
     print("Static portfolio preview successfully frozen to ./build/")
