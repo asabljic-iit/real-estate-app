@@ -4,6 +4,10 @@ A basic real estate management application. Renters can register, add personal
  and payment information, search for properties, and book them. Agents can
  register, add properties, and view bookings.
 
+## Static Demo
+
+Visit [asabljic-iit.github.io/real-estate-app/](asabljic-iit.github.io/real-estate-app/) for a static demo.
+
 ## Install
 
 Run in terminal:
