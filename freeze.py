@@ -145,6 +145,7 @@ app_module.get_property_details = mock_get_property_details
 app_module.get_user = lambda user_id: None
 
 app.config["FREEZER_DESTINATION"] = "build"
+app.config["FREEZER_BASE_URL"] = "https://asabljic-iit.github.io/real-estate-app/"
 app.config["FREEZER_RELATIVE_URLS"] = False
 app.config["FREEZER_IGNORE_404_NOT_FOUND"] = True
 app.config["FREEZER_IGNORE_MIMETYPE_WARNINGS"] = True
