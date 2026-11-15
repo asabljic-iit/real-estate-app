@@ -6,7 +6,7 @@ A basic real estate management application. Renters can register, add personal
 
 ## Static Demo
 
-Visit [asabljic-iit.github.io/real-estate-app/](asabljic-iit.github.io/real-estate-app/) for a static demo.
+Visit [asabljic-iit.github.io/real-estate-app/](https://asabljic-iit.github.io/real-estate-app/) for a static demo.
 
 ## Install
 
