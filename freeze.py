@@ -155,6 +155,15 @@ def book_property():
     for p in MOCK_PROPERTIES:
         yield {"property_id": str(p["property_id"])}
 
+import os
+import shutil
+
+@freezer.register_generator
+def static():
+    assets_dir = os.path.join(flask_app.static_folder, "assets")
+    for filename in os.listdir(assets_dir):
+        yield {"filename": f"assets/{filename}"}
+
 
 if __name__ == "__main__":
     freezer.freeze()
