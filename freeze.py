@@ -173,12 +173,22 @@ if __name__ == "__main__":
 
     freezer.freeze()
 
-    # Convert all extensionless routes (search, login, register, property-details/1, etc.)
-    # into <route>/index.html so GitHub Pages serves them with text/html MIME type
     for root, dirs, files in os.walk(build_dir):
         for filename in files:
-            if "." not in filename:
-                full_path = os.path.join(root, filename)
+            full_path = os.path.join(root, filename)
+            is_extensionless = "." not in filename
+
+            if filename.endswith(".html") or is_extensionless:
+                with open(full_path, "r", encoding="utf-8") as f:
+                    html = f.read()
+                html = (
+                    html.replace('src="/static/', 'src="/real-estate-app/static/')
+                    .replace("src='/static/", "src='/real-estate-app/static/")
+                )
+                with open(full_path, "w", encoding="utf-8") as f:
+                    f.write(html)
+
+            if is_extensionless:
                 tmp_path = full_path + ".tmp"
                 os.rename(full_path, tmp_path)
                 os.makedirs(full_path, exist_ok=True)
